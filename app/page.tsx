@@ -161,7 +161,7 @@ export default function Home() {
                   Book now
                 </a>
                 <a
-                  href="mailto:strongme@example.com"
+                  href="mailto:strongmeclass@gmail.com"
                   className="rounded-full border border-[#111] px-7 py-3 text-sm font-semibold hover:bg-[#111] hover:text-white"
                 >
                   strongmeclass@gmail.com
