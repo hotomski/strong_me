@@ -2,64 +2,207 @@ import Image from "next/image";
 
 export default function Home() {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
+    <div className="min-h-screen bg-[#f6f2ec] text-[#111]">
+      <main className="mx-auto max-w-6xl px-6 py-20">
+        {/* HERO */}
+        <section className="grid gap-16 md:grid-cols-12 md:items-center">
+          {/* Text */}
+          <div className="md:col-span-5">
+            <p className="mb-4 text-xs font-semibold tracking-[0.2em] text-[#666] uppercase">
+              Group Movement Class
+            </p>
+
+            {/* Keep the original main headline */}
+            <h1 className="text-4xl font-extrabold leading-tight tracking-tight md:text-5xl">
+              Strong body. Strong mind. Strong ME.
+            </h1>
+
+            {/* NEW hero paragraph (first sentence slightly emphasized, not huge) */}
+            <p className="mt-6 max-w-md text-base leading-relaxed text-[#555] md:text-lg">
+              <span className="font-semibold text-[#111]">
+                Rebuild your strength. Reclaim your power. Feel alive again.
+              </span>{" "}
+              Joyful strength and movement for your ME time — where music, play,
+              connection, and conscious awareness come together.
+            </p>
+
+            <div className="mt-10 flex flex-col gap-4 sm:flex-row">
+              <a
+                href="#join"
+                className="inline-flex items-center justify-center rounded-full bg-[#111] px-7 py-3 text-sm font-semibold text-white transition hover:bg-[#000]"
+              >
+                Book your spot
+              </a>
+
+              <a
+                href="#about"
+                className="inline-flex items-center justify-center rounded-full border border-[#111] px-7 py-3 text-sm font-semibold text-[#111] transition hover:bg-[#111] hover:text-white"
+              >
+                Learn more
+              </a>
+            </div>
+          </div>
+
+          {/* Image */}
+          <div className="md:col-span-7">
+            <div className="relative overflow-hidden border border-[#ddd] bg-white">
+              <div className="relative aspect-[16/10] w-full">
+                <Image
+                  src="/images/strongMEparts.png"
+                  alt="StrongME movement, connection and healing"
+                  fill
+                  priority
+                  className="object-cover"
+                  sizes="(min-width: 1024px) 60vw, 100vw"
+                />
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* ABOUT */}
+        <section
+          id="about"
+          className="mt-28 grid gap-12 border-t border-[#ddd] pt-16 md:grid-cols-12"
+        >
+          <div className="md:col-span-4">
+            <h2 className="text-2xl font-bold tracking-tight">
+              What is StrongME?
+            </h2>
+          </div>
+
+          <div className="md:col-span-8 space-y-4 text-[#555] leading-relaxed">
+            <p className="font-semibold text-[#111]">
+              StrongME is structured, joyful movement training designed to
+              rebuild strength, power, and stability during everyday and major
+              life stress.
+            </p>
+
+            <p>
+              Burnout. Anxiety. Birth. Illness. Loss. Career shifts. Ongoing
+              workplace pressure. Name it. Then take your power back — and feel
+              alive again.
+            </p>
+
+            <p>
+              When stress overloads your system, your body does not need more
+              pressure — it needs intelligent rebuilding. StrongME combines
+              rhythmic cardio and strength training, playful movement with balls
+              and cloths, and a guided closing practice of floor stretching,
+              mindful breath, and embodied awareness to help you restore
+              physical strength, stabilize stress responses, and rebuild
+              sustainable energy.
+            </p>
+
+            <p className="font-semibold text-[#111]">
+              This is not where you carry it.
+              <br />
+              This is where you release it.
+            </p>
+
+            <p>
+              We step onto the floor. We let the music lead. We dance. We play.
+              We sweat. We laugh. We breathe deeper. We reconnect — to our
+              bodies and to each other.
+            </p>
+
+            <p>
+              You leave lighter. Clearer. Stronger. And unmistakably uplifted —
+              your glow visible again.
+            </p>
+
+            <p className="font-semibold text-[#111]">
+              Strong body. Strong mind. Strong ME.
+            </p>
+          </div>
+        </section>
+
+        {/* FORMAT */}
+        <section className="mt-24 grid gap-12 md:grid-cols-12">
+          <div className="md:col-span-4">
+            <h2 className="text-2xl font-bold tracking-tight">Class format</h2>
+          </div>
+
+          <div className="md:col-span-8 space-y-6">
+            <FormatRow
+              time="10 min"
+              title="Warm-up & arrival"
+              text="Gentle rhythm, joint mobility, body awareness, playful introduction."
             />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
+            <FormatRow
+              time="35 min"
+              title="Dance, play & strength"
+              text="Joyful dance aerobics, soft ball movement, functional strength without pressure."
+            />
+            <FormatRow
+              time="15 min"
+              title="Stretch & mindfulness"
+              text="Slow stretches, breath, and integration to calm the nervous system."
+            />
+          </div>
+        </section>
+
+        {/* JOIN */}
+        <section id="join" className="mt-28 border-t border-[#ddd] pt-16">
+          <div className="grid gap-10 md:grid-cols-12 md:items-center">
+            <div className="md:col-span-7">
+              <h2 className="text-3xl font-extrabold tracking-tight">
+                Join us every Saturday
+              </h2>
+              <p className="mt-4 text-[#555]">
+              Make this your time. Leave energized, empowered, and strong.
+              </p>
+
+              <div className="mt-8 flex flex-col gap-4 sm:flex-row">
+                <a
+                  href="#"
+                  className="rounded-full bg-[#111] px-7 py-3 text-sm font-semibold text-white hover:bg-[#000]"
+                >
+                  Book now
+                </a>
+                <a
+                  href="mailto:strongme@example.com"
+                  className="rounded-full border border-[#111] px-7 py-3 text-sm font-semibold hover:bg-[#111] hover:text-white"
+                >
+                  strongmeclass@gmail.com
+                </a>
+              </div>
+            </div>
+
+            <div className="md:col-span-5 text-sm text-[#555]">
+              <div className="border border-[#ddd] bg-white p-6">
+                <p className="font-semibold text-[#111]">Schedule</p>
+                <p className="mt-1">Every Saturday · 10:30</p>
+
+                <p className="mt-6 font-semibold text-[#111]">Location</p>
+                <p className="mt-1">Zurich</p>
+              </div>
+            </div>
+          </div>
+        </section>
       </main>
+    </div>
+  );
+}
+
+function FormatRow({
+  time,
+  title,
+  text,
+}: {
+  time: string;
+  title: string;
+  text: string;
+}) {
+  return (
+    <div className="flex gap-6 border-b border-[#ddd] pb-4">
+      <div className="w-20 shrink-0 text-sm font-semibold text-[#111]">
+        {time}
+      </div>
+      <div>
+        <p className="font-semibold text-[#111]">{title}</p>
+        <p className="mt-1 text-sm text-[#555]">{text}</p>
+      </div>
     </div>
   );
 }
