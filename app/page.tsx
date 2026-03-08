@@ -2,77 +2,61 @@ import Image from "next/image";
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-[#f6f2ec] text-[#111]">
-      <main className="mx-auto max-w-6xl px-6 py-20">
+    <div className="site-shell">
+      <main className="page">
         {/* HERO */}
-        <section className="grid gap-16 md:grid-cols-12 md:items-center">
-          {/* Text */}
-          <div className="md:col-span-5">
-            <p className="mb-4 text-xs font-semibold tracking-[0.2em] text-[#666] uppercase">
-              Group Movement Class
-            </p>
+        <section className="hero-section">
+          <div className="hero-copy">
+            <p className="hero-eyebrow">Group Movement Class</p>
 
-            {/* Keep the original main headline */}
-            <h1 className="text-4xl font-extrabold leading-tight tracking-tight md:text-5xl">
-              Strong body. Strong mind. Strong ME.
+            <h1 className="hero-title">
+              Strong body.
+              <br />
+              Strong mind.
+              <br />
+              Strong ME.
             </h1>
 
-            {/* NEW hero paragraph (first sentence slightly emphasized, not huge) */}
-            <p className="mt-6 max-w-md text-base leading-relaxed text-[#555] md:text-lg">
-              <span className="font-semibold text-[#111]">
+            <p className="hero-description">
+              <span className="hero-description-strong">
                 Rebuild your strength. Reclaim your power. Feel alive again.
               </span>{" "}
               Joyful strength and movement for your ME time — where music, play,
               connection, and conscious awareness come together.
             </p>
 
-            <div className="mt-10 flex flex-col gap-4 sm:flex-row">
-              <a
-                href="#join"
-                className="inline-flex items-center justify-center rounded-full bg-[#111] px-7 py-3 text-sm font-semibold text-white transition hover:bg-[#000]"
-              >
+            <div className="hero-actions">
+              <a href="#join" className="btn btn-primary">
                 Book your spot
               </a>
-
-              <a
-                href="#about"
-                className="inline-flex items-center justify-center rounded-full border border-[#111] px-7 py-3 text-sm font-semibold text-[#111] transition hover:bg-[#111] hover:text-white"
-              >
+              <a href="#about" className="btn btn-secondary">
                 Learn more
               </a>
             </div>
           </div>
 
-          {/* Image */}
-          <div className="md:col-span-7">
-            <div className="relative overflow-hidden border border-[#ddd] bg-white">
-              <div className="relative aspect-[16/10] w-full">
-                <Image
-                  src="/images/strongMEparts.png"
-                  alt="StrongME movement, connection and healing"
-                  fill
-                  priority
-                  className="object-cover"
-                  sizes="(min-width: 1024px) 60vw, 100vw"
-                />
-              </div>
+          <div className="hero-media">
+            <div className="hero-image-frame">
+              <Image
+                src="/images/strongMEparts.png"
+                alt="StrongME movement, connection and healing"
+                fill
+                priority
+                className="hero-image"
+                sizes="(min-width: 1024px) 52vw, 100vw"
+              />
             </div>
           </div>
         </section>
 
         {/* ABOUT */}
-        <section
-          id="about"
-          className="mt-28 grid gap-12 border-t border-[#ddd] pt-16 md:grid-cols-12"
-        >
-          <div className="md:col-span-4">
-            <h2 className="text-2xl font-bold tracking-tight">
-              What is StrongME?
-            </h2>
+        <section id="about" className="content-section section-divider">
+          <div className="section-label">
+            <h2>What is StrongME?</h2>
           </div>
 
-          <div className="md:col-span-8 space-y-4 text-[#555] leading-relaxed">
-            <p className="font-semibold text-[#111]">
+          <div className="section-content">
+            <p className="lead-paragraph">
               StrongME is structured, joyful movement training designed to
               rebuild strength, power, and stability during everyday and major
               life stress.
@@ -94,7 +78,7 @@ export default function Home() {
               sustainable energy.
             </p>
 
-            <p className="font-semibold text-[#111]">
+            <p className="quote-block">
               This is not where you carry it.
               <br />
               This is where you release it.
@@ -111,19 +95,17 @@ export default function Home() {
               your glow visible again.
             </p>
 
-            <p className="font-semibold text-[#111]">
-              Strong body. Strong mind. Strong ME.
-            </p>
+            <p className="closing-line">Strong body. Strong mind. Strong ME.</p>
           </div>
         </section>
 
         {/* FORMAT */}
-        <section className="mt-24 grid gap-12 md:grid-cols-12">
-          <div className="md:col-span-4">
-            <h2 className="text-2xl font-bold tracking-tight">Class format</h2>
+        <section className="content-section">
+          <div className="section-label">
+            <h2>Class format</h2>
           </div>
 
-          <div className="md:col-span-8 space-y-6">
+          <div className="section-content section-content-tight">
             <FormatRow
               time="10 min"
               title="Warm-up & arrival"
@@ -143,40 +125,41 @@ export default function Home() {
         </section>
 
         {/* JOIN */}
-        <section id="join" className="mt-28 border-t border-[#ddd] pt-16">
-          <div className="grid gap-10 md:grid-cols-12 md:items-center">
-            <div className="md:col-span-7">
-              <h2 className="text-3xl font-extrabold tracking-tight">
-                Join us every Saturday
-              </h2>
-              <p className="mt-4 text-[#555]">
+        <section id="join" className="join-section section-divider">
+          <div className="join-copy">
+            <h2>Join us every Saturday</h2>
+            <p className="join-subline">
               Make this your time. Leave energized, empowered, and strong.
-              </p>
+            </p>
 
-              <div className="mt-8 flex flex-col gap-4 sm:flex-row">
-                <a
-                  href="#"
-                  className="rounded-full bg-[#111] px-7 py-3 text-sm font-semibold text-white hover:bg-[#000]"
-                >
-                  Book now
-                </a>
-                <a
-                  href="mailto:strongmeclass@gmail.com"
-                  className="rounded-full border border-[#111] px-7 py-3 text-sm font-semibold hover:bg-[#111] hover:text-white"
-                >
-                  strongmeclass@gmail.com
-                </a>
-              </div>
+            <div className="hero-actions">
+              <a href="#" className="btn btn-primary">
+                Book now
+              </a>
+              <a
+                href="mailto:strongmeclass@gmail.com"
+                className="btn btn-secondary"
+              >
+                strongmeclass@gmail.com
+              </a>
+            </div>
+          </div>
+
+          <div className="join-card">
+            <div className="join-card-block">
+              <span className="join-card-label">Schedule</span>
+              <p>Every Saturday · 10:30</p>
             </div>
 
-            <div className="md:col-span-5 text-sm text-[#555]">
-              <div className="border border-[#ddd] bg-white p-6">
-                <p className="font-semibold text-[#111]">Schedule</p>
-                <p className="mt-1">Every Saturday · 10:30</p>
+            <div className="join-card-block">
+              <span className="join-card-label">Price</span>
+              <p>35 CHF per class</p>
+              <p>235 CHF monthly subscription (8 classes included)</p>
+            </div>
 
-                <p className="mt-6 font-semibold text-[#111]">Location</p>
-                <p className="mt-1">Zurich</p>
-              </div>
+            <div className="join-card-block">
+              <span className="join-card-label">Location</span>
+              <p>Zurich</p>
             </div>
           </div>
         </section>
@@ -195,13 +178,11 @@ function FormatRow({
   text: string;
 }) {
   return (
-    <div className="flex gap-6 border-b border-[#ddd] pb-4">
-      <div className="w-20 shrink-0 text-sm font-semibold text-[#111]">
-        {time}
-      </div>
-      <div>
-        <p className="font-semibold text-[#111]">{title}</p>
-        <p className="mt-1 text-sm text-[#555]">{text}</p>
+    <div className="format-row">
+      <div className="format-time">{time}</div>
+      <div className="format-body">
+        <p className="format-title">{title}</p>
+        <p className="format-text">{text}</p>
       </div>
     </div>
   );
