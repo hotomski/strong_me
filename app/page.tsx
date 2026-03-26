@@ -71,8 +71,8 @@ export default function Home() {
             <p>
               When stress overloads your system, your body does not need more
               pressure — it needs intelligent rebuilding. StrongME combines
-              rhythmic cardio and strength training, playful movement with balls
-              and cloths, and a guided closing practice of floor stretching,
+              rhythmic cardio and strength training, playful movement with soft
+              cloths and pom poms, and a guided closing practice of stretching,
               mindful breath, and embodied awareness to help you restore
               physical strength, stabilize stress responses, and rebuild
               sustainable energy.
