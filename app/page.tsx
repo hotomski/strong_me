@@ -38,7 +38,7 @@ export default function Home() {
           <div className="hero-media">
             <div className="hero-image-frame">
               <Image
-                src="/images/strongMEparts.png"
+                src="/images/strongME_New.png?v=2"
                 alt="StrongME movement, connection and healing"
                 fill
                 priority
