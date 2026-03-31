@@ -18,6 +18,22 @@ const DatePicker = dynamic(
   }
 ) as unknown as DatePickerType;
 
+const AVAILABLE_DATES = new Set([
+  // April 2026
+  "2026-04-04", "2026-04-12", "2026-04-18", "2026-04-25",
+  // May 2026
+  "2026-05-02", "2026-05-10", "2026-05-16", "2026-05-23", "2026-05-31",
+  // June 2026
+  "2026-06-06", "2026-06-13", "2026-06-21", "2026-06-27",
+]);
+
+function toDateKey(date: Date) {
+  const y = date.getFullYear();
+  const m = String(date.getMonth() + 1).padStart(2, "0");
+  const d = String(date.getDate()).padStart(2, "0");
+  return `${y}-${m}-${d}`;
+}
+
 export default function Home() {
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [email, setEmail] = useState("");
@@ -292,12 +308,7 @@ export default function Home() {
                     selected={selectedDate}
                     onChange={(date: Date | null) => setSelectedDate(date)}
                     dateFormat="MMMM d, yyyy"
-                    filterDate={(date: Date) => {
-                      const today = new Date();
-                      today.setHours(0, 0, 0, 0);
-                      const day = date.getDay();
-                      return (day === 6 || day === 0) && date >= today;
-                    }}
+                    filterDate={(date: Date) => AVAILABLE_DATES.has(toDateKey(date))}
                     placeholderText="Select a Saturday or Sunday"
                     disabled={isSubmitting}
                   />
