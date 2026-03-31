@@ -43,7 +43,9 @@ export default async function handler(
 
   try {
     const transporter = nodemailer.createTransport({
-      service: "gmail",
+      host: "smtp.gmail.com",
+      port: 465,
+      secure: true,
       auth: {
         user: process.env.EMAIL_USER,
         pass: process.env.EMAIL_PASS,
@@ -104,13 +106,15 @@ Booked date: ${formattedDate}`,
       success: true,
       message: "Emails sent successfully!",
     });
-  } catch (error) {
+  } catch (error: any) {
     console.error("Email sending failed:", error);
 
+    const isDev = process.env.NODE_ENV !== "production";
     return res.status(500).json({
       success: false,
       error: "EMAIL_SEND_FAILED",
       message: "Failed to send email.",
+      ...(isDev && { debug: error?.message ?? String(error) }),
     });
   }
 }
