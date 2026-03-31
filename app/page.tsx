@@ -1,23 +1,30 @@
 "use client";
 
 import Image from "next/image";
-import React, { useEffect, useMemo, useState } from "react";
-import DatePicker from "react-datepicker";
+import dynamic from "next/dynamic";
+import React, { useMemo, useState } from "react";
 import "react-datepicker/dist/react-datepicker.css";
+
+import type ReactDatePicker from "react-datepicker";
+type DatePickerType = typeof ReactDatePicker;
+
+const DatePicker = dynamic(
+  () => import("react-datepicker").then((mod) => mod.default) as any,
+  {
+    ssr: false,
+    loading: () => (
+      <input type="text" placeholder="Select a Saturday or Sunday" disabled readOnly />
+    ),
+  }
+) as unknown as DatePickerType;
 
 export default function Home() {
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [email, setEmail] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isMounted, setIsMounted] = useState(false);
-
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [statusMessage, setStatusMessage] = useState("");
-  const [statusType, setStatusType] = useState<"success" | "error" | "">("");
-
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
+  const [statusType, setStatusType] = useState<"success" | "error" | "">();
 
   const isEmailValid = useMemo(() => {
     const trimmedEmail = email.trim();
@@ -229,7 +236,7 @@ export default function Home() {
         {/* JOIN */}
         <section id="join" className="join-section section-divider">
           <div className="join-copy">
-            <h2>Join us every Saturday</h2>
+            <h2>Join us every Saturday / Sunday</h2>
             <p className="join-subline">
               Make this your time. Leave energized, empowered, and strong.
             </p>
@@ -250,13 +257,14 @@ export default function Home() {
           <div className="join-card">
             <div className="join-card-block">
               <span className="join-card-label">Schedule</span>
-              <p>Every Saturday · 10:30</p>
+              <p>Every Saturday / Sunday · 10:30 AM</p>
+              <p>Next class: 04.04.2026</p>
             </div>
 
             <div className="join-card-block">
               <span className="join-card-label">Price</span>
-              <p>35 CHF per class</p>
-              <p>235 CHF monthly subscription (8 classes included)</p>
+              <p>35 CHF — Single Class</p>
+              <p>180 CHF — 6-Pack 😎</p>
             </div>
 
             <div className="join-card-block">
@@ -280,23 +288,19 @@ export default function Home() {
                 <>
                   <label>Select a Date:</label>
 
-                  {isMounted ? (
-                    <DatePicker
-                      selected={selectedDate}
-                      onChange={(date: Date | null) => setSelectedDate(date)}
-                      dateFormat="MMMM d, yyyy"
-                      filterDate={(date: Date) => date.getDay() === 6}
-                      placeholderText="Select a Saturday"
-                      disabled={isSubmitting}
-                    />
-                  ) : (
-                    <input
-                      type="text"
-                      placeholder="Select a Saturday"
-                      disabled
-                      readOnly
-                    />
-                  )}
+                  <DatePicker
+                    selected={selectedDate}
+                    onChange={(date: Date | null) => setSelectedDate(date)}
+                    dateFormat="MMMM d, yyyy"
+                    filterDate={(date: Date) => {
+                      const today = new Date();
+                      today.setHours(0, 0, 0, 0);
+                      const day = date.getDay();
+                      return (day === 6 || day === 0) && date >= today;
+                    }}
+                    placeholderText="Select a Saturday or Sunday"
+                    disabled={isSubmitting}
+                  />
 
                   <label>Email Address:</label>
                   <input
