@@ -31,15 +31,19 @@ export default async function handler(
     });
   }
 
-  const bookingDate = new Date(date);
-
-  if (Number.isNaN(bookingDate.getTime())) {
+  const dateParts = String(date).match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  if (!dateParts) {
     return res.status(400).json({
       success: false,
       error: "INVALID_DATE",
       message: "Invalid booking date.",
     });
   }
+  const bookingDate = new Date(
+    Number(dateParts[1]),
+    Number(dateParts[2]) - 1,
+    Number(dateParts[3])
+  );
 
   try {
     const transporter = nodemailer.createTransport({

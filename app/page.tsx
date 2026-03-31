@@ -84,7 +84,7 @@ export default function Home() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          date: selectedDate,
+          date: selectedDate?.toLocaleDateString("en-CA"), // YYYY-MM-DD in local time
           email: email.trim(),
         }),
       });
