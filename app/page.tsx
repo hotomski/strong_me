@@ -244,7 +244,7 @@ export default function Home() {
             <FormatRow
               time="15 min"
               title="Stretch & mindfulness"
-              text="Slow stretches, breath, and integration to calm the nervous system."
+              text="Slow stretches, breath, and a guided floor meditation to calm the nervous system."
             />
           </div>
         </section>
