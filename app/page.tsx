@@ -1,6 +1,106 @@
+"use client";
+
 import Image from "next/image";
+import React, { useEffect, useMemo, useState } from "react";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 export default function Home() {
+  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+  const [email, setEmail] = useState("");
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
+
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [statusMessage, setStatusMessage] = useState("");
+  const [statusType, setStatusType] = useState<"success" | "error" | "">("");
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  const isEmailValid = useMemo(() => {
+    const trimmedEmail = email.trim();
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmedEmail);
+  }, [email]);
+
+  const isFormValid = useMemo(() => {
+    return Boolean(selectedDate && isEmailValid);
+  }, [selectedDate, isEmailValid]);
+
+  const resetModalState = () => {
+    setSelectedDate(null);
+    setEmail("");
+    setIsSubmitting(false);
+    setStatusMessage("");
+    setStatusType("");
+  };
+
+  const openModal = () => {
+    resetModalState();
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    if (isSubmitting) return;
+    setIsModalOpen(false);
+    resetModalState();
+  };
+
+  const handleBooking = async () => {
+    if (!isFormValid || isSubmitting) return;
+
+    setIsSubmitting(true);
+    setStatusMessage("");
+    setStatusType("");
+
+    try {
+      const response = await fetch("/api/send-confirmation", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          date: selectedDate,
+          email: email.trim(),
+        }),
+      });
+
+      let data: any = null;
+      try {
+        data = await response.json();
+      } catch {
+        data = null;
+      }
+
+      if (response.ok && data?.success !== false) {
+        setStatusType("success");
+        setStatusMessage(
+          "Booking confirmed! A confirmation email has been sent."
+        );
+      } else {
+        setStatusType("error");
+
+        if (data?.error === "INVALID_EMAIL") {
+          setStatusMessage(
+            "Class is not booked. The email address is invalid."
+          );
+        } else {
+          setStatusMessage(
+            "Class is not booked. The email address may be invalid or unreachable."
+          );
+        }
+      }
+    } catch {
+      setStatusType("error");
+      setStatusMessage(
+        "Class is not booked. The email address may be invalid or unreachable."
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   return (
     <div className="site-shell">
       <main className="page">
@@ -26,9 +126,9 @@ export default function Home() {
             </p>
 
             <div className="hero-actions">
-              <a href="#join" className="btn btn-primary">
+              <button className="btn btn-primary" onClick={openModal}>
                 Book your spot
-              </a>
+              </button>
               <a href="#about" className="btn btn-secondary">
                 Learn more
               </a>
@@ -48,6 +148,8 @@ export default function Home() {
             </div>
           </div>
         </section>
+
+        
 
         {/* ABOUT */}
         <section id="about" className="content-section section-divider">
@@ -114,7 +216,7 @@ export default function Home() {
             <FormatRow
               time="35 min"
               title="Dance, play & strength"
-              text="Joyful dance aerobics, soft ball movement, functional strength without pressure."
+              text="Joyful dance aerobics, movement with soft, playing cloths, functional strength."
             />
             <FormatRow
               time="15 min"
@@ -133,9 +235,9 @@ export default function Home() {
             </p>
 
             <div className="hero-actions">
-              <a href="#" className="btn btn-primary">
+              <button className="btn btn-primary" onClick={openModal}>
                 Book now
-              </a>
+              </button>
               <a
                 href="mailto:strongmeclass@gmail.com"
                 className="btn btn-secondary"
@@ -159,10 +261,107 @@ export default function Home() {
 
             <div className="join-card-block">
               <span className="join-card-label">Location</span>
-              <p>Zurich</p>
+              <p>Zentrum Elch ACCU</p>
+              <p>Otto-Schütz-Weg 9, 8050 Zurich</p>
             </div>
           </div>
         </section>
+
+        {/* MODAL */}
+        {isModalOpen && (
+          <div className="modal-backdrop" onClick={closeModal}>
+            <div
+              className="modal-content"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <h3>Book Your Class</h3>
+
+              {statusType !== "success" && (
+                <>
+                  <label>Select a Date:</label>
+
+                  {isMounted ? (
+                    <DatePicker
+                      selected={selectedDate}
+                      onChange={(date: Date | null) => setSelectedDate(date)}
+                      dateFormat="MMMM d, yyyy"
+                      filterDate={(date: Date) => date.getDay() === 6}
+                      placeholderText="Select a Saturday"
+                      disabled={isSubmitting}
+                    />
+                  ) : (
+                    <input
+                      type="text"
+                      placeholder="Select a Saturday"
+                      disabled
+                      readOnly
+                    />
+                  )}
+
+                  <label>Email Address:</label>
+                  <input
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="Enter your email"
+                    disabled={isSubmitting}
+                  />
+
+                  {email.trim().length > 0 && !isEmailValid && (
+                    <div className="modal-feedback modal-feedback-error">
+                      Please enter a valid email address.
+                    </div>
+                  )}
+                </>
+              )}
+
+              {isSubmitting && (
+                <div className="modal-feedback modal-feedback-loading">
+                  <span className="spinner" aria-hidden="true" />
+                  <span>Sending your booking...</span>
+                </div>
+              )}
+
+              {!isSubmitting && statusMessage && (
+                <div
+                  className={`modal-feedback ${
+                    statusType === "success"
+                      ? "modal-feedback-success"
+                      : "modal-feedback-error"
+                  }`}
+                >
+                  {statusMessage}
+                </div>
+              )}
+
+              <div className="modal-actions">
+                {statusType === "success" ? (
+                  <button className="btn btn-primary" onClick={closeModal}>
+                    Close
+                  </button>
+                ) : (
+                  <>
+                    <button
+                      className="btn btn-secondary"
+                      onClick={closeModal}
+                      disabled={isSubmitting}
+                    >
+                      Cancel
+                    </button>
+
+                    <button
+                      className="btn btn-primary"
+                      onClick={handleBooking}
+                      disabled={!isFormValid || isSubmitting}
+                    >
+                      {isSubmitting ? "Booking..." : "Book class"}
+                    </button>
+                  </>
+                )}
+              </div>
+            </div>
+          </div>
+        )}
       </main>
     </div>
   );

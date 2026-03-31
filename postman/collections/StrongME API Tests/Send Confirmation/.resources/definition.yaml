@@ -1,0 +1,3 @@
+$kind: collection
+description: Test cases for POST /api/send-confirmation endpoint
+order: 1000

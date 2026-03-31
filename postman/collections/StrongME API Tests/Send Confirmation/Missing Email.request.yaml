@@ -1,0 +1,26 @@
+$kind: http-request
+url: "{{baseUrl}}/api/send-confirmation"
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: json
+  content: |-
+    {
+      "date": "2026-04-15T10:00:00Z"
+    }
+scripts:
+  - type: afterResponse
+    code: >-
+      pm.test("Status code is 400", function () {
+        pm.response.to.have.status(400);
+      });
+
+
+      pm.test("Response body has message 'Date and email are required.'",
+      function () {
+        var jsonData = pm.response.json();
+        pm.expect(jsonData.message).to.equal("Date and email are required.");
+      });
+    language: text/javascript
+order: 2000

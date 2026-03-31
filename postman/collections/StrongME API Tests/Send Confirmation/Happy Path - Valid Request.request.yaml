@@ -1,0 +1,32 @@
+$kind: http-request
+url: "{{baseUrl}}/api/send-confirmation"
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: json
+  content: |-
+    {
+      "date": "2026-04-15T10:00:00Z",
+      "email": "sofka.hrcak@gmail.com"
+    }
+scripts:
+  - type: afterResponse
+    code: >-
+      pm.test("Status code is 200", function () {
+        pm.response.to.have.status(200);
+      });
+
+
+      pm.test("Response body has message 'Email sent successfully!'", function
+      () {
+        var jsonData = pm.response.json();
+        pm.expect(jsonData.message).to.equal("Email sent successfully!");
+      });
+
+
+      pm.test("Response time is less than 5000ms", function () {
+        pm.expect(pm.response.responseTime).to.be.below(5000);
+      });
+    language: text/javascript
+order: 1000

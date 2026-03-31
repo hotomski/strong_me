@@ -1,0 +1,31 @@
+$kind: http-request
+url: "{{baseUrl}}/api/send-confirmation"
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: json
+  content: |-
+    {
+      "date": "not-a-date",
+      "email": "test@example.com"
+    }
+scripts:
+  - type: afterResponse
+    code: >-
+      pm.test("Status code is either 200 or 400", function () {
+        pm.expect([200, 400]).to.include(pm.response.code);
+      });
+
+
+      pm.test("Response has a 'message' field", function () {
+        var jsonData = pm.response.json();
+        pm.expect(jsonData).to.have.property("message");
+      });
+
+
+      pm.test("Log response for review", function () {
+        console.log("Invalid Date Format Response:", JSON.stringify(pm.response.json(), null, 2));
+      });
+    language: text/javascript
+order: 6000

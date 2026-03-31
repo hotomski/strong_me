@@ -1,0 +1,4 @@
+$kind: collection
+description: Test suite for the StrongME API send-confirmation endpoint
+variables:
+  baseUrl: http://localhost:3000
