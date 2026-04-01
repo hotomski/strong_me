@@ -279,6 +279,7 @@ export default function Home() {
 
             <div className="join-card-block">
               <span className="join-card-label">Price</span>
+              <p>First class is free 🎉</p>
               <p>35 CHF — Single Class</p>
               <p>180 CHF — 6-Pack 😎</p>
             </div>
