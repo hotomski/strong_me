@@ -7,7 +7,7 @@ body:
   type: json
   content: |-
     {
-      "date": "2026-04-15T10:00:00Z",
+      "date": "2026-04-04T10:30:00Z",
       "email": "sofka.hrcak@gmail.com"
     }
 scripts:

@@ -47,9 +47,9 @@ export default async function handler(
 
   try {
     const transporter = nodemailer.createTransport({
-      host: "smtp.gmail.com",
-      port: 465,
-      secure: true,
+      host: "smtp-relay.brevo.com",
+      port: 587,
+      secure: false, // STARTTLS — encrypts after connection upgrade
       auth: {
         user: process.env.EMAIL_USER,
         pass: process.env.EMAIL_PASS,
@@ -65,7 +65,7 @@ export default async function handler(
 
     // 1) Confirmation email to the customer
     await transporter.sendMail({
-      from: process.env.EMAIL_USER,
+      from: `StrongME <${process.env.EMAIL_FROM}>`,
       to: trimmedEmail,
       subject: "StrongME Class Booking Confirmation",
       text: `Thank you for booking your StrongME class!
@@ -73,7 +73,7 @@ export default async function handler(
 Details:
 Date: ${formattedDate}
 
-If you need to cancel, please email us at strongmeclass@gmail.com.
+If you need to cancel, please email us at info@strongme.pro.
 
 Cheers,
 StrongME team`,
@@ -82,7 +82,7 @@ StrongME team`,
           <h2>StrongME Class Booking Confirmation</h2>
           <p>Thank you for booking your StrongME class.</p>
           <p><strong>Date:</strong> ${formattedDate}</p>
-          <p>If you need to cancel, please email us at <a href="mailto:strongmeclass@gmail.com">strongmeclass@gmail.com</a>.</p>
+          <p>If you need to cancel, please email us at <a href="mailto:info@strongme.pro">info@strongme.pro</a>.</p>
           <p>Cheers,<br/>StrongME team</p>
         </div>
       `,
@@ -90,8 +90,8 @@ StrongME team`,
 
     // 2) Notification email to StrongME
     await transporter.sendMail({
-      from: process.env.EMAIL_USER,
-      to: "strongmeclass@gmail.com",
+      from: `StrongME <${process.env.EMAIL_FROM}>`,
+      to: "info@strongme.pro",
       subject: "New StrongME booking",
       text: `A new class booking was made.
 
