@@ -262,10 +262,10 @@ export default function Home() {
                 Book now
               </button>
               <a
-                href="mailto:strongmeclass@gmail.com"
+                href="mailto:info@strongme.pro"
                 className="btn btn-secondary"
               >
-                strongmeclass@gmail.com
+                info@strongme.pro
               </a>
             </div>
           </div>
