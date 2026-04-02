@@ -63,6 +63,27 @@ export default async function handler(
       day: "numeric",
     });
 
+    const pad = (n: number) => String(n).padStart(2, "0");
+    const y = bookingDate.getFullYear();
+    const m = pad(bookingDate.getMonth() + 1);
+    const d = pad(bookingDate.getDate());
+    const dtStart = `${y}${m}${d}T103000`;
+    const dtEnd   = `${y}${m}${d}T113000`;
+    const icsContent = [
+      "BEGIN:VCALENDAR",
+      "VERSION:2.0",
+      "PRODID:-//StrongME//EN",
+      "BEGIN:VEVENT",
+      `UID:strongme-${y}${m}${d}@strongme.pro`,
+      `DTSTART;TZID=Europe/Zurich:${dtStart}`,
+      `DTEND;TZID=Europe/Zurich:${dtEnd}`,
+      "SUMMARY:StrongME Class",
+      "DESCRIPTION:Joyful strength and movement class. Questions? info@strongme.pro",
+      "LOCATION:Otto-Schütz-Weg 9\\, 8050 Zurich",
+      "END:VEVENT",
+      "END:VCALENDAR",
+    ].join("\r\n");
+
     // 1) Confirmation email to the customer
     await transporter.sendMail({
       from: `StrongME <${process.env.EMAIL_FROM}>`,
@@ -72,6 +93,8 @@ export default async function handler(
 
 Details:
 Date: ${formattedDate}
+Time: 10:30 AM
+Location: Otto-Schütz-Weg 9, 8050 Zurich
 
 If you need to cancel, please email us at info@strongme.pro.
 
@@ -82,10 +105,19 @@ StrongME team`,
           <h2>StrongME Class Booking Confirmation</h2>
           <p>Thank you for booking your StrongME class.</p>
           <p><strong>Date:</strong> ${formattedDate}</p>
+          <p><strong>Time:</strong> 10:30 AM</p>
+          <p><strong>Location:</strong> Otto-Schütz-Weg 9, 8050 Zurich</p>
           <p>If you need to cancel, please email us at <a href="mailto:info@strongme.pro">info@strongme.pro</a>.</p>
           <p>Cheers,<br/>StrongME team</p>
         </div>
       `,
+      attachments: [
+        {
+          filename: "strongme-class.ics",
+          content: icsContent,
+          contentType: "text/calendar; method=REQUEST",
+        },
+      ],
     });
 
     // 2) Notification email to StrongME

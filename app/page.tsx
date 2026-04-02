@@ -40,7 +40,7 @@ export default function Home() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [statusMessage, setStatusMessage] = useState("");
-  const [statusType, setStatusType] = useState<"success" | "error" | "">();
+  const [statusType, setStatusType] = useState<"success" | "error" | ("")>("");
 
   const isEmailValid = useMemo(() => {
     const trimmedEmail = email.trim();
