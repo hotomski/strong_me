@@ -275,11 +275,22 @@ export default function Home() {
               <button className="btn btn-primary" onClick={openModal}>
                 Book now
               </button>
+            </div>
+
+            <div className="hero-actions">
               <a
                 href="mailto:info@strongme.pro"
                 className="btn btn-secondary"
               >
                 info@strongme.pro
+              </a>
+              <a
+                href="https://www.instagram.com/strongme_class/"
+                className="btn btn-secondary"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                @strongme_class
               </a>
             </div>
           </div>
