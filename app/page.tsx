@@ -259,7 +259,7 @@ export default function Home() {
             <p>👟 Sports shoes — lace up something you love to move in!</p>
             <p>💧 Water — hydration is self-love, bring a bottle!</p>
             <p>🧘 Yoga mat — if you have one, bring it for our floor practice.</p>
-            <p>🌟 Towel — we promise you&apos;ll need it, this class is joyful AND sweaty!</p>
+            <p>🧺 Towel — we promise you&apos;ll need it, this class is joyful AND sweaty!</p>
           </div>
         </section>
 

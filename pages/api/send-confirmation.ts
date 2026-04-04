@@ -100,7 +100,7 @@ What to bring:
 👟 Sports shoes — lace up something you love to move in!
 💧 Water — hydration is self-love, bring a bottle!
 🧘 Yoga mat — if you have one, bring it for our floor practice.
-🌟 Towel — we promise you'll need it, this class is joyful AND sweaty!
+🧺 Towel — we promise you'll need it, this class is joyful AND sweaty!
 
 If you need to cancel, please email us at info@strongme.pro.
 
