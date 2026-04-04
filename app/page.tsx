@@ -323,7 +323,27 @@ export default function Home() {
                     selected={selectedDate}
                     onChange={(date: Date | null) => setSelectedDate(date)}
                     dateFormat="MMMM d, yyyy"
-                    filterDate={(date: Date) => AVAILABLE_DATES.has(toDateKey(date))}
+                    filterDate={(date: Date) => {
+                      if (!AVAILABLE_DATES.has(toDateKey(date))) return false;
+                      const now = new Date();
+                      const parts = new Intl.DateTimeFormat("en-CH", {
+                        timeZone: "Europe/Zurich",
+                        hour: "numeric",
+                        minute: "numeric",
+                        hour12: false,
+                      }).formatToParts(now);
+                      const zh = Number(parts.find((p) => p.type === "hour")?.value ?? 0);
+                      const zm = Number(parts.find((p) => p.type === "minute")?.value ?? 0);
+                      const today = new Date();
+                      today.setHours(0, 0, 0, 0);
+                      const d = new Date(date);
+                      d.setHours(0, 0, 0, 0);
+                      if (d < today) return false;
+                      if (d.getTime() === today.getTime()) {
+                        return zh < 10 || (zh === 10 && zm < 30);
+                      }
+                      return true;
+                    }}
                     placeholderText="Select a Saturday or Sunday"
                     disabled={isSubmitting}
                   />
