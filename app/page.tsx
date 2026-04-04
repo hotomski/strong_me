@@ -256,10 +256,10 @@ export default function Home() {
           </div>
 
           <div className="section-content">
-            <p>👟 Sports shoes</p>
-            <p>💧 Water</p>
-            <p>🧘 Yoga mat (if you have one)</p>
-            <p>🌟 Towel — we&apos;re gonna sweat!</p>
+            <p>👟 Sports shoes — lace up something you love to move in!</p>
+            <p>💧 Water — hydration is self-love, bring a bottle!</p>
+            <p>🧘 Yoga mat — if you have one, bring it for our floor practice.</p>
+            <p>🌟 Towel — we promise you&apos;ll need it, this class is joyful AND sweaty!</p>
           </div>
         </section>
 
