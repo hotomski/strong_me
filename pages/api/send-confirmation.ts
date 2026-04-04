@@ -96,6 +96,12 @@ Date: ${formattedDate}
 Time: 10:30 AM
 Location: Otto-Schütz-Weg 9, 8050 Zurich
 
+What to bring:
+👟 Sports shoes — lace up something you love to move in!
+💧 Water — hydration is self-love, bring a bottle!
+🧘 Yoga mat — if you have one, bring it for our floor practice.
+🌟 Towel — we promise you'll need it, this class is joyful AND sweaty!
+
 If you need to cancel, please email us at info@strongme.pro.
 
 Cheers,
@@ -107,6 +113,13 @@ StrongME team`,
           <p><strong>Date:</strong> ${formattedDate}</p>
           <p><strong>Time:</strong> 10:30 AM</p>
           <p><strong>Location:</strong> Otto-Schütz-Weg 9, 8050 Zurich</p>
+          <p><strong>What to bring:</strong></p>
+          <ul>
+            <li>👟 <strong>Sports shoes</strong> — lace up something you love to move in!</li>
+            <li>💧 <strong>Water</strong> — hydration is self-love, bring a bottle!</li>
+            <li>🧘 <strong>Yoga mat</strong> — if you have one, bring it for our floor practice.</li>
+            <li>🌟 <strong>Towel</strong> — we promise you'll need it, this class is joyful AND sweaty!</li>
+          </ul>
           <p>If you need to cancel, please email us at <a href="mailto:info@strongme.pro">info@strongme.pro</a>.</p>
           <p>Cheers,<br/>StrongME team</p>
         </div>

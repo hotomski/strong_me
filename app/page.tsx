@@ -255,11 +255,11 @@ export default function Home() {
             <h2>What to bring</h2>
           </div>
 
-          <div className="section-content section-content-tight">
-            <FormatRow time="👟" title="Sports shoes" text="Lace up something you love to move in — we dance, we jump, we play!" />
-            <FormatRow time="💧" title="Water" text="Hydration is self-love. Bring a bottle and drink up!" />
-            <FormatRow time="🧘" title="Yoga mat" text="Got one? Bring it! Perfect for our grounding floor practice at the end." />
-            <FormatRow time="🌟" title="Towel" text="We promise you'll need it — this class is joyful AND sweaty!" />
+          <div className="section-content">
+            <p>👟 Sports shoes</p>
+            <p>💧 Water</p>
+            <p>🧘 Yoga mat (if you have one)</p>
+            <p>🌟 Towel — we&apos;re gonna sweat!</p>
           </div>
         </section>
 
