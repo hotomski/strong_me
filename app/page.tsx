@@ -249,6 +249,20 @@ export default function Home() {
           </div>
         </section>
 
+        {/* BRING */}
+        <section className="content-section">
+          <div className="section-label">
+            <h2>What to bring</h2>
+          </div>
+
+          <div className="section-content section-content-tight">
+            <FormatRow time="👟" title="Sports shoes" text="Lace up something you love to move in — we dance, we jump, we play!" />
+            <FormatRow time="💧" title="Water" text="Hydration is self-love. Bring a bottle and drink up!" />
+            <FormatRow time="🧘" title="Yoga mat" text="Got one? Bring it! Perfect for our grounding floor practice at the end." />
+            <FormatRow time="🌟" title="Towel" text="We promise you'll need it — this class is joyful AND sweaty!" />
+          </div>
+        </section>
+
         {/* JOIN */}
         <section id="join" className="join-section section-divider">
           <div className="join-copy">
@@ -274,7 +288,7 @@ export default function Home() {
             <div className="join-card-block">
               <span className="join-card-label">Schedule</span>
               <p>Every Saturday / Sunday · 10:30 AM</p>
-              <p>Next class: 04.04.2026</p>
+              <p>Next class: 12.04.2026</p>
             </div>
 
             <div className="join-card-block">
