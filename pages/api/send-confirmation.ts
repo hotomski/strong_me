@@ -118,7 +118,7 @@ StrongME team`,
             <li>👟 <strong>Sports shoes</strong> — lace up something you love to move in!</li>
             <li>💧 <strong>Water</strong> — hydration is self-love, bring a bottle!</li>
             <li>🧘 <strong>Yoga mat</strong> — if you have one, bring it for our floor practice.</li>
-            <li>🌟 <strong>Towel</strong> — we promise you'll need it, this class is joyful AND sweaty!</li>
+            <li>🧺 <strong>Towel</strong> — we promise you'll need it, this class is joyful AND sweaty!</li>
           </ul>
           <p>If you need to cancel, please email us at <a href="mailto:info@strongme.pro">info@strongme.pro</a>.</p>
           <p>Cheers,<br/>StrongME team</p>
