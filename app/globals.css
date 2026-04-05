@@ -477,6 +477,20 @@ img {
    MODAL FEEDBACK + LOADING
 ========================= */
 
+.date-sold-out {
+  color: #999 !important;
+  text-decoration: line-through;
+  position: relative;
+}
+
+.date-sold-out::after {
+  content: "Sold out";
+  display: block;
+  font-size: 0.5rem;
+  color: #e53e3e;
+  line-height: 1;
+}
+
 .modal-feedback {
   display: flex;
   align-items: center;

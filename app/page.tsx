@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import dynamic from "next/dynamic";
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { MdEmail } from "react-icons/md";
 import { FaInstagram } from "react-icons/fa";
 import "react-datepicker/dist/react-datepicker.css";
@@ -43,6 +43,28 @@ export default function Home() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [statusMessage, setStatusMessage] = useState("");
   const [statusType, setStatusType] = useState<"success" | "error" | ("")>("");
+  const [soldOutDates, setSoldOutDates] = useState<Set<string>>(new Set());
+
+  const fetchSoldOutDates = () => {
+    const dates = Array.from(AVAILABLE_DATES).join(",");
+    fetch(`/api/booking-counts?dates=${dates}`)
+      .then((r) => r.json())
+      .then((data) => {
+        if (data.success) {
+          const full = new Set<string>(
+            Object.entries(data.counts)
+              .filter(([, count]) => (count as number) >= 10)
+              .map(([date]) => date)
+          );
+          setSoldOutDates(full);
+        }
+      })
+      .catch(() => {});
+  };
+
+  useEffect(() => {
+    fetchSoldOutDates();
+  }, []);
 
   const isEmailValid = useMemo(() => {
     const trimmedEmail = email.trim();
@@ -63,6 +85,7 @@ export default function Home() {
 
   const openModal = () => {
     resetModalState();
+    fetchSoldOutDates();
     setIsModalOpen(true);
   };
 
@@ -103,12 +126,20 @@ export default function Home() {
         setStatusMessage(
           "Booking confirmed! A confirmation email has been sent."
         );
+        if (selectedDate) {
+          const key = toDateKey(selectedDate);
+          setSoldOutDates((prev) => new Set(prev).add(key));
+        }
       } else {
         setStatusType("error");
 
         if (data?.error === "INVALID_EMAIL") {
           setStatusMessage(
             "Class is not booked. The email address is invalid."
+          );
+        } else if (data?.error === "CLASS_FULL") {
+          setStatusMessage(
+            "This class is fully booked. Please select another date."
           );
         } else {
           setStatusMessage(
@@ -336,7 +367,9 @@ export default function Home() {
                     onChange={(date: Date | null) => setSelectedDate(date)}
                     dateFormat="MMMM d, yyyy"
                     filterDate={(date: Date) => {
-                      if (!AVAILABLE_DATES.has(toDateKey(date))) return false;
+                      const key = toDateKey(date);
+                      if (!AVAILABLE_DATES.has(key)) return false;
+                      if (soldOutDates.has(key)) return false;
                       const now = new Date();
                       const parts = new Intl.DateTimeFormat("en-CH", {
                         timeZone: "Europe/Zurich",
@@ -355,6 +388,10 @@ export default function Home() {
                         return zh < 10 || (zh === 10 && zm < 30);
                       }
                       return true;
+                    }}
+                    dayClassName={(date: Date) => {
+                      const key = toDateKey(date);
+                      return soldOutDates.has(key) ? "date-sold-out" : "";
                     }}
                     placeholderText="Select a Saturday or Sunday"
                     disabled={isSubmitting}

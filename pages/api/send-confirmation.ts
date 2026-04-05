@@ -1,5 +1,11 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import nodemailer from "nodemailer";
+import { Redis } from "@upstash/redis";
+
+const redis = new Redis({
+  url: process.env.KV_REST_API_URL!,
+  token: process.env.KV_REST_API_TOKEN!,
+});
 
 export default async function handler(
   req: NextApiRequest,
@@ -44,6 +50,16 @@ export default async function handler(
     Number(dateParts[2]) - 1,
     Number(dateParts[3])
   );
+
+  const dateKey = `bookings:${date}`;
+  const currentCount = (await redis.get<number>(dateKey)) ?? 0;
+  if (currentCount >= 10) {
+    return res.status(409).json({
+      success: false,
+      error: "CLASS_FULL",
+      message: "This class is fully booked.",
+    });
+  }
 
   try {
     const transporter = nodemailer.createTransport({
@@ -150,6 +166,8 @@ Booked date: ${formattedDate}`,
         </div>
       `,
     });
+
+    await redis.incr(dateKey);
 
     return res.status(200).json({
       success: true,
