@@ -115,6 +115,7 @@ img {
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  gap: 8px;
   min-height: 48px;
   padding: 0 22px;
   border-radius: var(--radius-pill);
@@ -276,6 +277,28 @@ img {
   font-size: 1.05rem;
   line-height: 1.7;
   font-weight: 600;
+}
+
+.join-contact {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px 24px;
+  margin-top: 16px;
+}
+
+.join-contact-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--muted);
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.join-contact-link:hover {
+  color: var(--text);
 }
 
 .join-card {

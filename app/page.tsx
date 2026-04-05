@@ -3,6 +3,8 @@
 import Image from "next/image";
 import dynamic from "next/dynamic";
 import React, { useMemo, useState } from "react";
+import { MdEmail } from "react-icons/md";
+import { FaInstagram } from "react-icons/fa";
 import "react-datepicker/dist/react-datepicker.css";
 
 import type ReactDatePicker from "react-datepicker";
@@ -277,19 +279,18 @@ export default function Home() {
               </button>
             </div>
 
-            <div className="hero-actions">
-              <a
-                href="mailto:info@strongme.pro"
-                className="btn btn-secondary"
-              >
+            <div className="join-contact">
+              <a href="mailto:info@strongme.pro" className="join-contact-link">
+                <MdEmail size={16} />
                 info@strongme.pro
               </a>
               <a
                 href="https://www.instagram.com/strongme_class/"
-                className="btn btn-secondary"
+                className="join-contact-link"
                 target="_blank"
                 rel="noopener noreferrer"
               >
+                <FaInstagram size={16} />
                 @strongme_class
               </a>
             </div>
