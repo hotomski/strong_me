@@ -363,6 +363,7 @@ export default function Home() {
                   <label>Select a Date:</label>
 
                   <DatePicker
+                    calendarStartDay={1}
                     selected={selectedDate}
                     onChange={(date: Date | null) => setSelectedDate(date)}
                     dateFormat="MMMM d, yyyy"
