@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import dynamic from "next/dynamic";
-import React, { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { MdEmail } from "react-icons/md";
 import { FaInstagram } from "react-icons/fa";
 import "react-datepicker/dist/react-datepicker.css";
@@ -331,7 +331,7 @@ export default function Home() {
             <div className="join-card-block">
               <span className="join-card-label">Schedule</span>
               <p>Every Saturday / Sunday · 10:30 AM</p>
-              <p>Next class: 12.04.2026</p>
+              <p><strong>Next class: Saturday 18.04.2026</strong></p>
             </div>
 
             <div className="join-card-block">
