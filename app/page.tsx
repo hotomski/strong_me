@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import dynamic from "next/dynamic";
 import { useEffect, useMemo, useState } from "react";
 import { MdEmail } from "react-icons/md";
@@ -159,6 +160,10 @@ export default function Home() {
 
   return (
     <div className="site-shell">
+      <nav className="corp-nav">
+        <span className="corp-nav-logo">StrongME</span>
+        <Link href="/corporate" className="corp-nav-link">StrongME Corporate →</Link>
+      </nav>
       <main className="page">
         {/* HERO */}
         <section className="hero-section">
