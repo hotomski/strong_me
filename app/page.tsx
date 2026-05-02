@@ -301,6 +301,32 @@ export default function Home() {
           </div>
         </section>
 
+        {/* GALLERY */}
+        <section className="content-section section-divider">
+          <div className="section-label">
+            <h2>The class in photos</h2>
+          </div>
+
+          <div className="gallery-grid">
+            {[
+              { src: "/images/PompomsFixedLightning.png", alt: "StrongME pompoms" },
+              { src: "/images/Connect_end.png", alt: "StrongME class connection" },
+              { src: "/images/Fly.png", alt: "StrongME class" },
+              { src: "/images/high five.png", alt: "StrongME high five" },
+            ].map((img) => (
+              <div key={img.src} className="gallery-item">
+                <Image
+                  src={img.src}
+                  alt={img.alt}
+                  fill
+                  className="gallery-photo"
+                  sizes="(min-width: 1024px) 25vw, 50vw"
+                />
+              </div>
+            ))}
+          </div>
+        </section>
+
         {/* JOIN */}
         <section id="join" className="join-section section-divider">
           <div className="join-copy">
