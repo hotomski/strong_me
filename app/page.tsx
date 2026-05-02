@@ -362,7 +362,7 @@ export default function Home() {
             <div className="join-card-block">
               <span className="join-card-label">Schedule</span>
               <p>Every Saturday / Sunday · 10:30 AM</p>
-              <p><strong>Next class: Saturday 25.04.2026</strong></p>
+              <p><strong>Next class: Sunday 10.05.2026</strong></p>
             </div>
 
             <div className="join-card-block">
