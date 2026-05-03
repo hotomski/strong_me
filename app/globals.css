@@ -616,6 +616,12 @@ img {
   color: var(--corp-text);
 }
 
+.corp-nav-links {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
 .corp-nav-link {
   font-size: 0.88rem;
   font-weight: 600;
@@ -875,3 +881,328 @@ img {
   transform: none;
 }
 
+
+/* =========================
+   MY BOOKINGS PAGE
+========================= */
+
+.lookup-form {
+  display: flex;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.lookup-input {
+  flex: 1;
+  min-width: 220px;
+  padding: 0.7rem 1rem;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-pill);
+  background: var(--surface);
+  font-size: 0.95rem;
+  font-family: var(--font-body);
+  color: var(--text);
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.lookup-input:focus {
+  border-color: var(--text);
+}
+
+.lookup-error {
+  color: #c0392b;
+  font-size: 0.9rem;
+  margin-bottom: 1rem;
+}
+
+.lookup-results {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  margin-top: 1.5rem;
+}
+
+.sixpack-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding: 1.25rem 1.5rem;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--line);
+}
+
+.sixpack-card-active {
+  background: #111111;
+  border-color: #111111;
+  color: #ffffff;
+}
+
+.sixpack-card-empty {
+  background: var(--surface);
+  color: var(--muted);
+}
+
+.sixpack-card-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  opacity: 0.6;
+}
+
+.sixpack-card-count {
+  font-size: 3rem;
+  font-weight: 800;
+  font-family: var(--font-display);
+  line-height: 1;
+}
+
+.sixpack-card-sub {
+  font-size: 0.95rem;
+  font-weight: 500;
+}
+
+.bookings-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.bookings-group-title {
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin: 0 0 0.25rem;
+}
+
+.booking-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1rem;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--line);
+}
+
+.booking-row-upcoming {
+  background: var(--surface);
+}
+
+.booking-row-past {
+  background: transparent;
+  opacity: 0.65;
+}
+
+.booking-date {
+  font-size: 0.95rem;
+  font-weight: 500;
+}
+
+.booking-badge {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding: 0.2rem 0.6rem;
+  border-radius: var(--radius-pill);
+}
+
+.badge-sixpack {
+  background: #111111;
+  color: #ffffff;
+}
+
+.badge-single {
+  background: var(--line);
+  color: var(--muted);
+}
+
+/* =========================
+   ADMIN PAGE
+========================= */
+
+.admin-shell {
+  min-height: 100vh;
+  background: #f8f9fb;
+  font-family: var(--font-body);
+  color: #1a1a2e;
+}
+
+.admin-login {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  gap: 1rem;
+  padding: 2rem;
+}
+
+.admin-login-title {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 800;
+  margin: 0 0 0.5rem;
+}
+
+.admin-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 2rem;
+  background: #1a1a2e;
+  color: #ffffff;
+}
+
+.admin-nav-title {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 1rem;
+  letter-spacing: -0.02em;
+}
+
+.admin-nav-logout {
+  background: none;
+  border: 1px solid rgba(255,255,255,0.3);
+  color: rgba(255,255,255,0.8);
+  padding: 0.3rem 0.8rem;
+  border-radius: var(--radius-pill);
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.admin-nav-logout:hover {
+  background: rgba(255,255,255,0.1);
+  color: #ffffff;
+}
+
+.admin-main {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem 4rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem;
+}
+
+.admin-section {
+  background: #ffffff;
+  border-radius: var(--radius-md);
+  border: 1px solid #e2e8f0;
+  padding: 1.5rem;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+}
+
+.admin-section-title {
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #64748b;
+  margin: 0 0 1.25rem;
+}
+
+.admin-input {
+  padding: 0.65rem 0.9rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-family: var(--font-body);
+  color: #1a1a2e;
+  background: #f8f9fb;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.admin-input:focus {
+  border-color: #1a1a2e;
+  background: #ffffff;
+}
+
+.admin-input-wide {
+  flex: 1;
+  min-width: 200px;
+}
+
+.admin-select {
+  cursor: pointer;
+}
+
+.admin-form-row {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.admin-error {
+  color: #c0392b;
+  font-size: 0.85rem;
+  margin: 0;
+}
+
+.admin-status {
+  margin-top: 0.75rem;
+  font-size: 0.9rem;
+  color: #166534;
+  font-weight: 500;
+}
+
+.admin-empty {
+  color: #94a3b8;
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.admin-table th {
+  text-align: left;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: #94a3b8;
+  padding: 0 0.75rem 0.75rem;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.admin-table td {
+  padding: 0.65rem 0.75rem;
+  border-bottom: 1px solid #f1f5f9;
+  color: #334155;
+}
+
+.admin-table tr:last-child td {
+  border-bottom: none;
+}
+
+.admin-row-sixpack td {
+  font-weight: 600;
+  color: #1a1a2e;
+}
+
+.admin-table-sm {
+  margin-top: 1rem;
+}
+
+.admin-lookup-result {
+  margin-top: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  font-size: 0.9rem;
+}
+
+.admin-lookup-result p {
+  margin: 0 0 0.25rem;
+}

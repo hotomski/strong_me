@@ -162,7 +162,10 @@ export default function Home() {
     <div className="site-shell">
       <nav className="corp-nav">
         <span className="corp-nav-logo">StrongME</span>
-        <Link href="/corporate" className="corp-nav-link">StrongME Corporate →</Link>
+        <div className="corp-nav-links">
+          <Link href="/my-bookings" className="corp-nav-link">My Bookings</Link>
+          <Link href="/corporate" className="corp-nav-link">StrongME Corporate →</Link>
+        </div>
       </nav>
       <main className="page">
         {/* HERO */}

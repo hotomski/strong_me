@@ -27,6 +27,7 @@ export default async function handler(
   }
 
   const trimmedEmail = String(email).trim();
+  const normalizedEmail = trimmedEmail.toLowerCase();
 
   const isEmailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmedEmail);
   if (!isEmailValid) {
@@ -59,6 +60,18 @@ export default async function handler(
       error: "CLASS_FULL",
       message: "This class is fully booked.",
     });
+  }
+
+  // Check sixpack status before sending emails
+  const sixpackKey = `user:sixpack:${normalizedEmail}`;
+  const sixpackRemaining = (await redis.get<number>(sixpackKey)) ?? 0;
+
+  let newSixpackRemaining = sixpackRemaining;
+  let sixpackStatus: "none" | "used" | "last_used" = "none";
+
+  if (sixpackRemaining > 0) {
+    newSixpackRemaining = sixpackRemaining - 1;
+    sixpackStatus = newSixpackRemaining === 0 ? "last_used" : "used";
   }
 
   try {
@@ -100,6 +113,20 @@ export default async function handler(
       "END:VCALENDAR",
     ].join("\r\n");
 
+    const sixpackTextNote =
+      sixpackStatus === "used"
+        ? `\n6-Pack: ${newSixpackRemaining} ${newSixpackRemaining === 1 ? "entry" : "entries"} remaining.`
+        : sixpackStatus === "last_used"
+        ? `\n⚠️ This was your last 6-pack class! Please arrange payment for your next classes with Sofija.`
+        : "";
+
+    const sixpackHtmlNote =
+      sixpackStatus === "used"
+        ? `<p>🎟️ <strong>6-Pack:</strong> ${newSixpackRemaining} ${newSixpackRemaining === 1 ? "entry" : "entries"} remaining. <a href="https://www.strongme.pro/my-bookings">View your bookings →</a></p>`
+        : sixpackStatus === "last_used"
+        ? `<p>⚠️ <strong>This was your last 6-pack class!</strong> Please arrange payment for your next classes with Sofija.</p>`
+        : "";
+
     // 1) Confirmation email to the customer
     await transporter.sendMail({
       from: `StrongME <${process.env.EMAIL_FROM}>`,
@@ -111,7 +138,7 @@ Details:
 Date: ${formattedDate}
 Time: 10:30 AM
 Location: Otto-Schütz-Weg 9, 8050 Zurich
-
+${sixpackTextNote}
 What to bring:
 👟 Sports shoes — lace up something you love to move in!
 💧 Water — hydration is self-love, bring a bottle!
@@ -119,6 +146,7 @@ What to bring:
 🧖 Towel — we promise you'll need it, this class is joyful AND sweaty!
 
 If you need to cancel, please email us at info@strongme.pro.
+Check your bookings: https://www.strongme.pro/my-bookings
 
 Cheers,
 StrongME team`,
@@ -129,6 +157,7 @@ StrongME team`,
           <p><strong>Date:</strong> ${formattedDate}</p>
           <p><strong>Time:</strong> 10:30 AM</p>
           <p><strong>Location:</strong> Otto-Schütz-Weg 9, 8050 Zurich</p>
+          ${sixpackHtmlNote}
           <p><strong>What to bring:</strong></p>
           <ul>
             <li>👟 <strong>Sports shoes</strong> — lace up something you love to move in!</li>
@@ -137,6 +166,7 @@ StrongME team`,
             <li>🧖 <strong>Towel</strong> — we promise you'll need it, this class is joyful AND sweaty!</li>
           </ul>
           <p>If you need to cancel, please email us at <a href="mailto:info@strongme.pro">info@strongme.pro</a>.</p>
+          <p><a href="https://www.strongme.pro/my-bookings">Check your bookings and 6-pack status →</a></p>
           <p>Cheers,<br/>StrongME team</p>
         </div>
       `,
@@ -150,24 +180,47 @@ StrongME team`,
     });
 
     // 2) Notification email to StrongME
+    const adminSixpackNote =
+      sixpackStatus === "none"
+        ? "Single class booking."
+        : sixpackStatus === "used"
+        ? `6-Pack entry used. Remaining: ${newSixpackRemaining}`
+        : `⚠️ Last 6-pack entry used — customer needs to arrange new payment.`;
+
     await transporter.sendMail({
       from: `StrongME <${process.env.EMAIL_FROM}>`,
       to: "info@strongme.pro",
-      subject: "New StrongME booking",
-      text: `A new class booking was made.
-
-Customer email: ${trimmedEmail}
-Booked date: ${formattedDate}`,
+      subject: sixpackStatus === "last_used"
+        ? "New booking — ⚠️ Last 6-pack entry used"
+        : "New StrongME booking",
+      text: `New class booking.\n\nCustomer: ${trimmedEmail}\nDate: ${formattedDate}\n${adminSixpackNote}`,
       html: `
         <div style="font-family: Arial, sans-serif; line-height: 1.6;">
           <h2>New StrongME booking</h2>
-          <p><strong>Customer email:</strong> ${trimmedEmail}</p>
-          <p><strong>Booked date:</strong> ${formattedDate}</p>
+          <p><strong>Customer:</strong> ${trimmedEmail}</p>
+          <p><strong>Date:</strong> ${formattedDate}</p>
+          <p><strong>Type:</strong> ${adminSixpackNote}</p>
         </div>
       `,
     });
 
+    // Redis updates after successful emails
     await redis.incr(dateKey);
+
+    if (sixpackStatus !== "none") {
+      await redis.set(sixpackKey, newSixpackRemaining);
+    }
+
+    const bookingsKey = `user:bookings:${normalizedEmail}`;
+    const existingRaw = (await redis.get<string>(bookingsKey)) ?? "[]";
+    const existingBookings = JSON.parse(existingRaw);
+    existingBookings.push({
+      date,
+      type: sixpackStatus !== "none" ? "sixpack" : "single",
+      bookedAt: new Date().toISOString(),
+    });
+    await redis.set(bookingsKey, JSON.stringify(existingBookings));
+    await redis.sadd("all:emails", normalizedEmail);
 
     return res.status(200).json({
       success: true,
