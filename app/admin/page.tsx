@@ -74,8 +74,11 @@ export default function AdminPage() {
     bookings: UserBooking[];
     sixpackRemaining: number;
     sixpackStartDate: string | null;
+    bookingCountOverride: number | null;
     payments: UserPayment[];
   } | null>(null);
+  const [editBookingCount, setEditBookingCount] = useState("");
+  const [bookingCountStatus, setBookingCountStatus] = useState("");
   const [lookupLoading, setLookupLoading] = useState(false);
 
   const login = async () => {
@@ -176,12 +179,39 @@ export default function AdminPage() {
     if (!lookupEmail.trim()) return;
     setLookupLoading(true);
     setLookupData(null);
+    setBookingCountStatus("");
     try {
       const res = await fetch(`/api/user/bookings?email=${encodeURIComponent(lookupEmail.trim())}`);
       const json = await res.json();
-      if (json.success) setLookupData(json);
+      if (json.success) {
+        setLookupData(json);
+        const effective = json.bookingCountOverride !== null ? json.bookingCountOverride : json.bookings.length;
+        setEditBookingCount(String(effective));
+      }
     } catch {}
     setLookupLoading(false);
+  };
+
+  const saveBookingCount = async () => {
+    if (!lookupEmail.trim()) return;
+    setBookingCountStatus("");
+    try {
+      const res = await fetch("/api/admin/set-booking-count", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: lookupEmail.trim(), count: Number(editBookingCount), password }),
+      });
+      const json = await res.json();
+      if (json.success) {
+        setBookingCountStatus(`✓ Booking count set to ${json.count}`);
+        setLookupData((prev) => prev ? { ...prev, bookingCountOverride: json.count } : prev);
+        refreshDashboard();
+      } else {
+        setBookingCountStatus("Error updating count.");
+      }
+    } catch {
+      setBookingCountStatus("Error updating count.");
+    }
   };
 
   if (!authed) {
@@ -393,7 +423,19 @@ export default function AdminPage() {
           {lookupData && (
             <div className="admin-lookup-result">
               <p><strong>6-Pack remaining:</strong> {lookupData.sixpackRemaining > 0 ? `${lookupData.sixpackRemaining} entries` : "None"}{lookupData.sixpackStartDate && lookupData.sixpackRemaining > 0 ? ` (from ${formatDate(lookupData.sixpackStartDate)})` : ""}</p>
-              <p><strong>Total bookings:</strong> {lookupData.bookings.length}</p>
+              <div className="admin-form-row" style={{ alignItems: "center", marginBottom: "0.25rem" }}>
+                <strong>Total bookings:</strong>
+                <input
+                  type="number"
+                  value={editBookingCount}
+                  onChange={(e) => setEditBookingCount(e.target.value)}
+                  className="admin-input admin-input-amount"
+                  min="0"
+                  style={{ width: "5rem" }}
+                />
+                <button className="btn btn-primary" onClick={saveBookingCount}>Save</button>
+                {bookingCountStatus && <span className="admin-status" style={{ margin: 0 }}>{bookingCountStatus}</span>}
+              </div>
               {lookupData.bookings.length > 0 && (
                 <>
                   <p className="admin-lookup-subtitle">Bookings</p>

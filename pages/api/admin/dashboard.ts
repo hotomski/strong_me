@@ -39,18 +39,21 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   if (allEmails.length > 0) {
     const sixpackKeys = allEmails.map((e) => `user:sixpack:${e}`);
     const bookingsKeys = allEmails.map((e) => `user:bookings:${e}`);
+    const overrideKeys = allEmails.map((e) => `user:bookings:count-override:${e}`);
 
-    const [sixpackCounts, bookingsRaws] = await Promise.all([
+    const [sixpackCounts, bookingsRaws, overrideCounts] = await Promise.all([
       redis.mget<number[]>(...sixpackKeys),
-      redis.mget<string[]>(...bookingsKeys),
+      redis.mget<any[]>(...bookingsKeys),
+      redis.mget<number[]>(...overrideKeys),
     ]);
 
     users = allEmails.map((email, i) => {
       const sixpackRemaining = sixpackCounts[i] ?? 0;
       const raw = bookingsRaws[i];
-      const bookings = raw ? JSON.parse(raw as string) : [];
+      const bookings = Array.isArray(raw) ? raw : (raw ? (() => { try { return JSON.parse(raw); } catch { return []; } })() : []);
       const lastBooking = bookings.length > 0 ? bookings[bookings.length - 1].date : null;
-      return { email, sixpackRemaining, bookingCount: bookings.length, lastBooking };
+      const bookingCount = overrideCounts[i] !== null && overrideCounts[i] !== undefined ? overrideCounts[i] : bookings.length;
+      return { email, sixpackRemaining, bookingCount, lastBooking };
     });
 
     users.sort((a, b) => {
