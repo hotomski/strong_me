@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { AVAILABLE_DATES_ARRAY } from "@/lib/constants";
 
 type User = {
@@ -18,31 +19,6 @@ type DashboardData = {
 type UserBooking = { date: string; type: string; bookedAt: string };
 type UserPayment = { id: string; date: string; type: string; amount: number; note: string };
 
-type Payment = {
-  id: string;
-  email: string;
-  type: "single" | "sixpack";
-  amount: number;
-  date: string;
-  note: string;
-  recordedAt: string;
-};
-
-type PaymentsData = {
-  payments: Payment[];
-  total: number;
-  totalPages: number;
-  currentPage: number;
-  totalAmount: number;
-};
-
-const FILTERS = [
-  { key: "1m", label: "Last month" },
-  { key: "3m", label: "Last 3 months" },
-  { key: "6m", label: "Last 6 months" },
-  { key: "1y", label: "Last year" },
-  { key: "all", label: "All time" },
-];
 
 function formatDate(dateStr: string) {
   const [y, m, d] = dateStr.split("-").map(Number);
@@ -90,10 +66,6 @@ export default function AdminPage() {
   const [payStatus, setPayStatus] = useState("");
   const [paySubmitting, setPaySubmitting] = useState(false);
 
-  // Payment history
-  const [paymentsData, setPaymentsData] = useState<PaymentsData | null>(null);
-  const [payFilter, setPayFilter] = useState("3m");
-  const [payLoading, setPayLoading] = useState(false);
 
   // User lookup
   const [lookupEmail, setLookupEmail] = useState("");
@@ -117,7 +89,6 @@ export default function AdminPage() {
       if (res.ok && json.success) {
         setData(json);
         setAuthed(true);
-        loadPayments("3m", 1, password);
       } else {
         setAuthError("Incorrect password.");
       }
@@ -136,20 +107,6 @@ export default function AdminPage() {
     });
     const json = await res.json();
     if (json.success) setData(json);
-  };
-
-  const loadPayments = async (filter: string, page: number, pwd = password) => {
-    setPayLoading(true);
-    try {
-      const res = await fetch("/api/admin/payments", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ filter, page, password: pwd }),
-      });
-      const json = await res.json();
-      if (json.success) setPaymentsData(json);
-    } catch {}
-    setPayLoading(false);
   };
 
   const assignSixpack = async () => {
@@ -198,7 +155,6 @@ export default function AdminPage() {
         setPayEmail("");
         setPayNote("");
         setPayDate(todayStr());
-        loadPayments(payFilter, 1);
       } else {
         setPayStatus("Error recording payment.");
       }
@@ -250,9 +206,14 @@ export default function AdminPage() {
     <div className="admin-shell">
       <nav className="admin-nav">
         <span className="admin-nav-title">StrongME Admin</span>
-        <button className="admin-nav-logout" onClick={() => { setAuthed(false); setPassword(""); setData(null); setPaymentsData(null); }}>
-          Sign out
-        </button>
+        <div style={{ display: "flex", gap: "1rem", alignItems: "center" }}>
+          <Link href="/payments" style={{ color: "rgba(255,255,255,0.7)", fontSize: "0.85rem", fontWeight: 600 }}>
+            Payment History →
+          </Link>
+          <button className="admin-nav-logout" onClick={() => { setAuthed(false); setPassword(""); setData(null); }}>
+            Sign out
+          </button>
+        </div>
       </nav>
 
       <main className="admin-main">
@@ -369,83 +330,6 @@ export default function AdminPage() {
             </div>
           </div>
           {payStatus && <p className="admin-status">{payStatus}</p>}
-        </section>
-
-        {/* Payment history */}
-        <section className="admin-section">
-          <h2 className="admin-section-title">Payment history</h2>
-
-          <div className="admin-filter-tabs">
-            {FILTERS.map((f) => (
-              <button
-                key={f.key}
-                className={`admin-filter-tab ${payFilter === f.key ? "admin-filter-tab-active" : ""}`}
-                onClick={() => { setPayFilter(f.key); loadPayments(f.key, 1); }}
-              >
-                {f.label}
-              </button>
-            ))}
-          </div>
-
-          {paymentsData && (
-            <div className="admin-payments-summary">
-              <span><strong>{paymentsData.total}</strong> payments</span>
-              <span className="admin-payments-total"><strong>{paymentsData.totalAmount} CHF</strong> total</span>
-            </div>
-          )}
-
-          {payLoading ? (
-            <p className="admin-empty">Loading...</p>
-          ) : paymentsData && paymentsData.payments.length > 0 ? (
-            <>
-              <table className="admin-table">
-                <thead>
-                  <tr>
-                    <th>Date</th>
-                    <th>Customer</th>
-                    <th>Type</th>
-                    <th>Amount</th>
-                    <th>Note</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {paymentsData.payments.map((p) => (
-                    <tr key={p.id}>
-                      <td>{formatDate(p.date)}</td>
-                      <td>{p.email}</td>
-                      <td>{p.type === "sixpack" ? "6-Pack" : "Single"}</td>
-                      <td>{p.amount} CHF</td>
-                      <td>{p.note || "—"}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-
-              {paymentsData.totalPages > 1 && (
-                <div className="admin-pagination">
-                  <button
-                    className="admin-page-btn"
-                    disabled={paymentsData.currentPage <= 1}
-                    onClick={() => loadPayments(payFilter, paymentsData.currentPage - 1)}
-                  >
-                    ← Previous
-                  </button>
-                  <span className="admin-page-info">
-                    Page {paymentsData.currentPage} of {paymentsData.totalPages}
-                  </span>
-                  <button
-                    className="admin-page-btn"
-                    disabled={paymentsData.currentPage >= paymentsData.totalPages}
-                    onClick={() => loadPayments(payFilter, paymentsData.currentPage + 1)}
-                  >
-                    Next →
-                  </button>
-                </div>
-              )}
-            </>
-          ) : (
-            <p className="admin-empty">No payments found for this period.</p>
-          )}
         </section>
 
         {/* All customers */}

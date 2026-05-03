@@ -34,8 +34,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   // Fetch all payments (oldest first), then filter + reverse in memory
   const allRaw = await redis.zrange("payments", 0, -1);
 
-  const allPayments = (allRaw as string[])
-    .map((r) => { try { return JSON.parse(r); } catch { return null; } })
+  const allPayments = (allRaw as any[])
+    .map((r) => {
+      if (!r) return null;
+      if (typeof r === "object") return r;
+      try { return JSON.parse(r); } catch { return null; }
+    })
     .filter(Boolean)
     .filter((p) => new Date(p.date).getTime() >= fromTs)
     .reverse(); // newest first

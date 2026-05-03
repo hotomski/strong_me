@@ -6,6 +6,12 @@ const redis = new Redis({
   token: process.env.KV_REST_API_TOKEN!,
 });
 
+function parseItem(r: any) {
+  if (!r) return null;
+  if (typeof r === "object") return r;
+  try { return JSON.parse(r); } catch { return null; }
+}
+
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== "GET") {
     res.setHeader("Allow", ["GET"]);
@@ -20,16 +26,18 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   const key = email.trim().toLowerCase();
 
   const [bookingsRaw, sixpackRemaining, paymentsRaw] = await Promise.all([
-    redis.get<string>(`user:bookings:${key}`),
+    redis.get<any>(`user:bookings:${key}`),
     redis.get<number>(`user:sixpack:${key}`),
     redis.zrange(`user:payments:${key}`, 0, -1),
   ]);
 
   const bookings: Array<{ date: string; type: string; bookedAt: string }> =
-    bookingsRaw ? JSON.parse(bookingsRaw) : [];
+    Array.isArray(bookingsRaw) ? bookingsRaw
+    : typeof bookingsRaw === "string" ? (() => { try { return JSON.parse(bookingsRaw); } catch { return []; } })()
+    : [];
 
-  const payments = (paymentsRaw as string[])
-    .map((r) => { try { return JSON.parse(r); } catch { return null; } })
+  const payments = (paymentsRaw as any[])
+    .map(parseItem)
     .filter(Boolean)
     .reverse(); // newest first
 

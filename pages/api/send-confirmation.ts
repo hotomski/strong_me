@@ -212,8 +212,12 @@ StrongME team`,
     }
 
     const bookingsKey = `user:bookings:${normalizedEmail}`;
-    const existingRaw = (await redis.get<string>(bookingsKey)) ?? "[]";
-    const existingBookings = JSON.parse(existingRaw);
+    const rawBookings = await redis.get<any>(bookingsKey);
+    const existingBookings: any[] = Array.isArray(rawBookings)
+      ? rawBookings
+      : typeof rawBookings === "string"
+      ? (() => { try { return JSON.parse(rawBookings); } catch { return []; } })()
+      : [];
     existingBookings.push({
       date,
       type: sixpackStatus !== "none" ? "sixpack" : "single",
