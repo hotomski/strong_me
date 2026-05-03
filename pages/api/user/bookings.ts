@@ -19,17 +19,24 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   const key = email.trim().toLowerCase();
 
-  const [bookingsRaw, sixpackRemaining] = await Promise.all([
+  const [bookingsRaw, sixpackRemaining, paymentsRaw] = await Promise.all([
     redis.get<string>(`user:bookings:${key}`),
     redis.get<number>(`user:sixpack:${key}`),
+    redis.zrange(`user:payments:${key}`, 0, -1),
   ]);
 
   const bookings: Array<{ date: string; type: string; bookedAt: string }> =
     bookingsRaw ? JSON.parse(bookingsRaw) : [];
 
+  const payments = (paymentsRaw as string[])
+    .map((r) => { try { return JSON.parse(r); } catch { return null; } })
+    .filter(Boolean)
+    .reverse(); // newest first
+
   return res.status(200).json({
     success: true,
     bookings: bookings.sort((a, b) => b.date.localeCompare(a.date)),
     sixpackRemaining: sixpackRemaining ?? 0,
+    payments,
   });
 }

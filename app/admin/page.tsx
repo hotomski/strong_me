@@ -15,11 +15,34 @@ type DashboardData = {
   users: User[];
 };
 
-type UserBooking = {
+type UserBooking = { date: string; type: string; bookedAt: string };
+type UserPayment = { id: string; date: string; type: string; amount: number; note: string };
+
+type Payment = {
+  id: string;
+  email: string;
+  type: "single" | "sixpack";
+  amount: number;
   date: string;
-  type: string;
-  bookedAt: string;
+  note: string;
+  recordedAt: string;
 };
+
+type PaymentsData = {
+  payments: Payment[];
+  total: number;
+  totalPages: number;
+  currentPage: number;
+  totalAmount: number;
+};
+
+const FILTERS = [
+  { key: "1m", label: "Last month" },
+  { key: "3m", label: "Last 3 months" },
+  { key: "6m", label: "Last 6 months" },
+  { key: "1y", label: "Last year" },
+  { key: "all", label: "All time" },
+];
 
 function formatDate(dateStr: string) {
   const [y, m, d] = dateStr.split("-").map(Number);
@@ -29,6 +52,11 @@ function formatDate(dateStr: string) {
     day: "numeric",
     year: "numeric",
   });
+}
+
+function todayStr() {
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
 }
 
 const today = new Date();
@@ -48,14 +76,32 @@ export default function AdminPage() {
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState<DashboardData | null>(null);
 
-  // Assign sixpack form
+  // Assign sixpack
   const [assignEmail, setAssignEmail] = useState("");
   const [assignEntries, setAssignEntries] = useState("6");
   const [assignStatus, setAssignStatus] = useState("");
 
+  // Record payment
+  const [payEmail, setPayEmail] = useState("");
+  const [payType, setPayType] = useState<"single" | "sixpack">("single");
+  const [payAmount, setPayAmount] = useState("35");
+  const [payDate, setPayDate] = useState(todayStr());
+  const [payNote, setPayNote] = useState("");
+  const [payStatus, setPayStatus] = useState("");
+  const [paySubmitting, setPaySubmitting] = useState(false);
+
+  // Payment history
+  const [paymentsData, setPaymentsData] = useState<PaymentsData | null>(null);
+  const [payFilter, setPayFilter] = useState("3m");
+  const [payLoading, setPayLoading] = useState(false);
+
   // User lookup
   const [lookupEmail, setLookupEmail] = useState("");
-  const [lookupData, setLookupData] = useState<{ bookings: UserBooking[]; sixpackRemaining: number } | null>(null);
+  const [lookupData, setLookupData] = useState<{
+    bookings: UserBooking[];
+    sixpackRemaining: number;
+    payments: UserPayment[];
+  } | null>(null);
   const [lookupLoading, setLookupLoading] = useState(false);
 
   const login = async () => {
@@ -71,6 +117,7 @@ export default function AdminPage() {
       if (res.ok && json.success) {
         setData(json);
         setAuthed(true);
+        loadPayments("3m", 1, password);
       } else {
         setAuthError("Incorrect password.");
       }
@@ -89,6 +136,20 @@ export default function AdminPage() {
     });
     const json = await res.json();
     if (json.success) setData(json);
+  };
+
+  const loadPayments = async (filter: string, page: number, pwd = password) => {
+    setPayLoading(true);
+    try {
+      const res = await fetch("/api/admin/payments", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ filter, page, password: pwd }),
+      });
+      const json = await res.json();
+      if (json.success) setPaymentsData(json);
+    } catch {}
+    setPayLoading(false);
   };
 
   const assignSixpack = async () => {
@@ -111,6 +172,40 @@ export default function AdminPage() {
       }
     } catch {
       setAssignStatus("Error assigning 6-pack.");
+    }
+  };
+
+  const recordPayment = async () => {
+    if (!payEmail.trim()) return;
+    setPaySubmitting(true);
+    setPayStatus("");
+    try {
+      const res = await fetch("/api/admin/add-payment", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: payEmail,
+          type: payType,
+          amount: Number(payAmount),
+          date: payDate,
+          note: payNote,
+          password,
+        }),
+      });
+      const json = await res.json();
+      if (json.success) {
+        setPayStatus(`✓ Payment recorded for ${json.payment.email}`);
+        setPayEmail("");
+        setPayNote("");
+        setPayDate(todayStr());
+        loadPayments(payFilter, 1);
+      } else {
+        setPayStatus("Error recording payment.");
+      }
+    } catch {
+      setPayStatus("Error recording payment.");
+    } finally {
+      setPaySubmitting(false);
     }
   };
 
@@ -155,7 +250,7 @@ export default function AdminPage() {
     <div className="admin-shell">
       <nav className="admin-nav">
         <span className="admin-nav-title">StrongME Admin</span>
-        <button className="admin-nav-logout" onClick={() => { setAuthed(false); setPassword(""); setData(null); }}>
+        <button className="admin-nav-logout" onClick={() => { setAuthed(false); setPassword(""); setData(null); setPaymentsData(null); }}>
           Sign out
         </button>
       </nav>
@@ -167,11 +262,7 @@ export default function AdminPage() {
           <h2 className="admin-section-title">Upcoming classes</h2>
           <table className="admin-table">
             <thead>
-              <tr>
-                <th>Date</th>
-                <th>Booked</th>
-                <th>Spots left</th>
-              </tr>
+              <tr><th>Date</th><th>Booked</th><th>Spots left</th></tr>
             </thead>
             <tbody>
               {upcomingDates.map((d) => {
@@ -213,7 +304,151 @@ export default function AdminPage() {
           {assignStatus && <p className="admin-status">{assignStatus}</p>}
         </section>
 
-        {/* Users */}
+        {/* Record payment */}
+        <section className="admin-section">
+          <h2 className="admin-section-title">Record payment</h2>
+          <div className="admin-form-col">
+            <div className="admin-form-row">
+              <input
+                type="email"
+                placeholder="Customer email"
+                value={payEmail}
+                onChange={(e) => setPayEmail(e.target.value)}
+                className="admin-input admin-input-wide"
+              />
+              <input
+                type="date"
+                value={payDate}
+                onChange={(e) => setPayDate(e.target.value)}
+                className="admin-input"
+              />
+            </div>
+            <div className="admin-form-row">
+              <div className="admin-radio-group">
+                <label className={`admin-radio-label ${payType === "single" ? "admin-radio-active" : ""}`}>
+                  <input
+                    type="radio"
+                    name="payType"
+                    value="single"
+                    checked={payType === "single"}
+                    onChange={() => { setPayType("single"); setPayAmount("35"); }}
+                  />
+                  Single class
+                </label>
+                <label className={`admin-radio-label ${payType === "sixpack" ? "admin-radio-active" : ""}`}>
+                  <input
+                    type="radio"
+                    name="payType"
+                    value="sixpack"
+                    checked={payType === "sixpack"}
+                    onChange={() => { setPayType("sixpack"); setPayAmount("180"); }}
+                  />
+                  6-Pack
+                </label>
+              </div>
+              <div className="admin-amount-field">
+                <input
+                  type="number"
+                  value={payAmount}
+                  onChange={(e) => setPayAmount(e.target.value)}
+                  className="admin-input admin-input-amount"
+                  min="0"
+                />
+                <span className="admin-currency">CHF</span>
+              </div>
+              <input
+                type="text"
+                placeholder="Note (optional)"
+                value={payNote}
+                onChange={(e) => setPayNote(e.target.value)}
+                className="admin-input admin-input-wide"
+              />
+              <button className="btn btn-primary" onClick={recordPayment} disabled={paySubmitting || !payEmail.trim()}>
+                {paySubmitting ? "Saving..." : "Record"}
+              </button>
+            </div>
+          </div>
+          {payStatus && <p className="admin-status">{payStatus}</p>}
+        </section>
+
+        {/* Payment history */}
+        <section className="admin-section">
+          <h2 className="admin-section-title">Payment history</h2>
+
+          <div className="admin-filter-tabs">
+            {FILTERS.map((f) => (
+              <button
+                key={f.key}
+                className={`admin-filter-tab ${payFilter === f.key ? "admin-filter-tab-active" : ""}`}
+                onClick={() => { setPayFilter(f.key); loadPayments(f.key, 1); }}
+              >
+                {f.label}
+              </button>
+            ))}
+          </div>
+
+          {paymentsData && (
+            <div className="admin-payments-summary">
+              <span><strong>{paymentsData.total}</strong> payments</span>
+              <span className="admin-payments-total"><strong>{paymentsData.totalAmount} CHF</strong> total</span>
+            </div>
+          )}
+
+          {payLoading ? (
+            <p className="admin-empty">Loading...</p>
+          ) : paymentsData && paymentsData.payments.length > 0 ? (
+            <>
+              <table className="admin-table">
+                <thead>
+                  <tr>
+                    <th>Date</th>
+                    <th>Customer</th>
+                    <th>Type</th>
+                    <th>Amount</th>
+                    <th>Note</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {paymentsData.payments.map((p) => (
+                    <tr key={p.id}>
+                      <td>{formatDate(p.date)}</td>
+                      <td>{p.email}</td>
+                      <td>{p.type === "sixpack" ? "6-Pack" : "Single"}</td>
+                      <td>{p.amount} CHF</td>
+                      <td>{p.note || "—"}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+
+              {paymentsData.totalPages > 1 && (
+                <div className="admin-pagination">
+                  <button
+                    className="admin-page-btn"
+                    disabled={paymentsData.currentPage <= 1}
+                    onClick={() => loadPayments(payFilter, paymentsData.currentPage - 1)}
+                  >
+                    ← Previous
+                  </button>
+                  <span className="admin-page-info">
+                    Page {paymentsData.currentPage} of {paymentsData.totalPages}
+                  </span>
+                  <button
+                    className="admin-page-btn"
+                    disabled={paymentsData.currentPage >= paymentsData.totalPages}
+                    onClick={() => loadPayments(payFilter, paymentsData.currentPage + 1)}
+                  >
+                    Next →
+                  </button>
+                </div>
+              )}
+            </>
+          ) : (
+            <p className="admin-empty">No payments found for this period.</p>
+          )}
+        </section>
+
+        {/* All customers */}
         <section className="admin-section">
           <h2 className="admin-section-title">All customers</h2>
           {data && data.users.length > 0 ? (
@@ -263,19 +498,38 @@ export default function AdminPage() {
               <p><strong>6-Pack remaining:</strong> {lookupData.sixpackRemaining > 0 ? `${lookupData.sixpackRemaining} entries` : "None"}</p>
               <p><strong>Total bookings:</strong> {lookupData.bookings.length}</p>
               {lookupData.bookings.length > 0 && (
-                <table className="admin-table admin-table-sm">
-                  <thead>
-                    <tr><th>Date</th><th>Type</th></tr>
-                  </thead>
-                  <tbody>
-                    {lookupData.bookings.map((b) => (
-                      <tr key={b.date + b.bookedAt}>
-                        <td>{formatDate(b.date)}</td>
-                        <td>{b.type === "sixpack" ? "6-Pack" : "Single"}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
+                <>
+                  <p className="admin-lookup-subtitle">Bookings</p>
+                  <table className="admin-table admin-table-sm">
+                    <thead><tr><th>Date</th><th>Type</th></tr></thead>
+                    <tbody>
+                      {lookupData.bookings.map((b) => (
+                        <tr key={b.date + b.bookedAt}>
+                          <td>{formatDate(b.date)}</td>
+                          <td>{b.type === "sixpack" ? "6-Pack" : "Single"}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </>
+              )}
+              {lookupData.payments && lookupData.payments.length > 0 && (
+                <>
+                  <p className="admin-lookup-subtitle">Payments</p>
+                  <table className="admin-table admin-table-sm">
+                    <thead><tr><th>Date</th><th>Type</th><th>Amount</th><th>Note</th></tr></thead>
+                    <tbody>
+                      {lookupData.payments.map((p) => (
+                        <tr key={p.id}>
+                          <td>{formatDate(p.date)}</td>
+                          <td>{p.type === "sixpack" ? "6-Pack" : "Single"}</td>
+                          <td>{p.amount} CHF</td>
+                          <td>{p.note || "—"}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </>
               )}
             </div>
           )}
@@ -285,9 +539,7 @@ export default function AdminPage() {
         <section className="admin-section">
           <h2 className="admin-section-title">Past classes</h2>
           <table className="admin-table">
-            <thead>
-              <tr><th>Date</th><th>Booked</th></tr>
-            </thead>
+            <thead><tr><th>Date</th><th>Booked</th></tr></thead>
             <tbody>
               {pastDates.map((d) => (
                 <tr key={d}>
