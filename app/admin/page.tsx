@@ -151,7 +151,11 @@ export default function AdminPage() {
       });
       const json = await res.json();
       if (json.success) {
-        setPayStatus(`✓ Payment recorded for ${json.payment.email}`);
+        setPayStatus(
+          json.emailSent === false
+            ? `✓ Payment recorded for ${json.payment.email} — confirmation email failed to send.`
+            : `✓ Payment recorded and confirmation sent to ${json.payment.email}.`
+        );
         setPayEmail("");
         setPayNote("");
         setPayDate(todayStr());
