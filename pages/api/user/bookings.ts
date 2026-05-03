@@ -25,9 +25,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   const key = email.trim().toLowerCase();
 
-  const [bookingsRaw, sixpackRemaining, paymentsRaw] = await Promise.all([
+  const [bookingsRaw, sixpackRemaining, sixpackStartDate, paymentsRaw] = await Promise.all([
     redis.get<any>(`user:bookings:${key}`),
     redis.get<number>(`user:sixpack:${key}`),
+    redis.get<string>(`user:sixpack:startdate:${key}`),
     redis.zrange(`user:payments:${key}`, 0, -1),
   ]);
 
@@ -45,6 +46,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     success: true,
     bookings: bookings.sort((a, b) => b.date.localeCompare(a.date)),
     sixpackRemaining: sixpackRemaining ?? 0,
+    sixpackStartDate: sixpackStartDate ?? null,
     payments,
   });
 }

@@ -55,6 +55,7 @@ export default function AdminPage() {
   // Assign sixpack
   const [assignEmail, setAssignEmail] = useState("");
   const [assignEntries, setAssignEntries] = useState("6");
+  const [assignStartDate, setAssignStartDate] = useState(todayStr());
   const [assignStatus, setAssignStatus] = useState("");
 
   // Record payment
@@ -72,6 +73,7 @@ export default function AdminPage() {
   const [lookupData, setLookupData] = useState<{
     bookings: UserBooking[];
     sixpackRemaining: number;
+    sixpackStartDate: string | null;
     payments: UserPayment[];
   } | null>(null);
   const [lookupLoading, setLookupLoading] = useState(false);
@@ -116,13 +118,14 @@ export default function AdminPage() {
       const res = await fetch("/api/admin/assign-sixpack", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: assignEmail, entries: Number(assignEntries), password }),
+        body: JSON.stringify({ email: assignEmail, entries: Number(assignEntries), startDate: assignStartDate, password }),
       });
       const json = await res.json();
       if (json.success) {
         setAssignStatus(`✓ Assigned ${json.entries} entries to ${json.email}`);
         setAssignEmail("");
         setAssignEntries("6");
+        setAssignStartDate(todayStr());
         refreshDashboard();
       } else {
         setAssignStatus("Error assigning 6-pack.");
@@ -264,6 +267,12 @@ export default function AdminPage() {
                 <option key={n} value={n}>{n} {n === 6 ? "(full 6-pack)" : n === 1 ? "entry" : "entries"}</option>
               ))}
             </select>
+            <input
+              type="date"
+              value={assignStartDate}
+              onChange={(e) => setAssignStartDate(e.target.value)}
+              className="admin-input"
+            />
             <button className="btn btn-primary" onClick={assignSixpack}>Assign</button>
           </div>
           {assignStatus && <p className="admin-status">{assignStatus}</p>}
@@ -383,7 +392,7 @@ export default function AdminPage() {
           </div>
           {lookupData && (
             <div className="admin-lookup-result">
-              <p><strong>6-Pack remaining:</strong> {lookupData.sixpackRemaining > 0 ? `${lookupData.sixpackRemaining} entries` : "None"}</p>
+              <p><strong>6-Pack remaining:</strong> {lookupData.sixpackRemaining > 0 ? `${lookupData.sixpackRemaining} entries` : "None"}{lookupData.sixpackStartDate && lookupData.sixpackRemaining > 0 ? ` (from ${formatDate(lookupData.sixpackStartDate)})` : ""}</p>
               <p><strong>Total bookings:</strong> {lookupData.bookings.length}</p>
               {lookupData.bookings.length > 0 && (
                 <>

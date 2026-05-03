@@ -12,7 +12,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     return res.status(405).end();
   }
 
-  const { email, entries, password } = req.body;
+  const { email, entries, startDate, password } = req.body;
 
   if (!password || password !== process.env.ADMIN_PASSWORD) {
     return res.status(401).json({ success: false, error: "UNAUTHORIZED" });
@@ -24,13 +24,18 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   const normalizedEmail = email.trim().toLowerCase();
   const sixpackEntries = Math.max(0, Math.min(6, Number(entries) || 6));
+  const date = startDate ? String(startDate) : new Date().toISOString().slice(0, 10);
 
-  await redis.set(`user:sixpack:${normalizedEmail}`, sixpackEntries);
-  await redis.sadd("all:emails", normalizedEmail);
+  await Promise.all([
+    redis.set(`user:sixpack:${normalizedEmail}`, sixpackEntries),
+    redis.set(`user:sixpack:startdate:${normalizedEmail}`, date),
+    redis.sadd("all:emails", normalizedEmail),
+  ]);
 
   return res.status(200).json({
     success: true,
     email: normalizedEmail,
     entries: sixpackEntries,
+    startDate: date,
   });
 }
