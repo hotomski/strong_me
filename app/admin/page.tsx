@@ -7,6 +7,7 @@ import { AVAILABLE_DATES_ARRAY } from "@/lib/constants";
 type User = {
   email: string;
   sixpackRemaining: number;
+  hadSixpack: boolean;
   bookingCount: number;
   lastBooking: string | null;
 };
@@ -359,7 +360,11 @@ export default function AdminPage() {
                       const editVal = bookingEdits[u.email] ?? String(u.bookingCount);
                       const saving = bookingSaving[u.email] ?? false;
                       return (
-                        <tr key={u.email} className={u.sixpackRemaining > 0 ? "admin-row-sixpack" : ""}>
+                        <tr key={u.email} className={
+                          u.sixpackRemaining === 1 ? "admin-row-orange" :
+                          u.sixpackRemaining === 0 && u.hadSixpack ? "admin-row-red" :
+                          u.sixpackRemaining > 1 ? "admin-row-sixpack" : ""
+                        }>
                           <td>{u.email}</td>
                           <td>{u.sixpackRemaining > 0 ? `${u.sixpackRemaining} entries` : "—"}</td>
                           <td>

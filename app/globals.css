@@ -1190,6 +1190,16 @@ img {
   font-weight: 600;
   color: #1a1a2e;
 }
+.admin-row-orange td {
+  font-weight: 600;
+  background-color: #fff3e0;
+  color: #7c3000;
+}
+.admin-row-red td {
+  font-weight: 600;
+  background-color: #fdecea;
+  color: #7c0000;
+}
 
 .admin-table-sm {
   margin-top: 1rem;
