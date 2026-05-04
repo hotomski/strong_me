@@ -23,9 +23,37 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   const key = email.trim().toLowerCase();
-  const n = Math.max(0, Number(count));
+  const newCount = Math.max(0, Number(count));
 
-  await redis.set(`user:bookings:count-override:${key}`, n);
+  const [bookingsRaw, sixpackRemaining, currentOverride] = await Promise.all([
+    redis.get<any>(`user:bookings:${key}`),
+    redis.get<number>(`user:sixpack:${key}`),
+    redis.get<number>(`user:bookings:count-override:${key}`),
+  ]);
 
-  return res.status(200).json({ success: true, email: key, count: n });
+  const bookings = Array.isArray(bookingsRaw)
+    ? bookingsRaw
+    : bookingsRaw
+      ? (() => { try { return JSON.parse(bookingsRaw); } catch { return []; } })()
+      : [];
+
+  const currentCount = currentOverride !== null && currentOverride !== undefined
+    ? currentOverride
+    : bookings.length;
+
+  const delta = newCount - currentCount;
+
+  const ops: Promise<unknown>[] = [
+    redis.set(`user:bookings:count-override:${key}`, newCount),
+  ];
+
+  let newSixpack = sixpackRemaining ?? 0;
+  if (delta > 0 && newSixpack > 0) {
+    newSixpack = Math.max(0, newSixpack - delta);
+    ops.push(redis.set(`user:sixpack:${key}`, newSixpack));
+  }
+
+  await Promise.all(ops);
+
+  return res.status(200).json({ success: true, email: key, count: newCount, sixpackRemaining: newSixpack });
 }

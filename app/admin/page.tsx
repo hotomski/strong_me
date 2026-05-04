@@ -204,7 +204,7 @@ export default function AdminPage() {
       const json = await res.json();
       if (json.success) {
         setBookingCountStatus(`✓ Booking count set to ${json.count}`);
-        setLookupData((prev) => prev ? { ...prev, bookingCountOverride: json.count } : prev);
+        setLookupData((prev) => prev ? { ...prev, bookingCountOverride: json.count, sixpackRemaining: json.sixpackRemaining } : prev);
         refreshDashboard();
       } else {
         setBookingCountStatus("Error updating count.");
