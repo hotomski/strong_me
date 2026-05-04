@@ -16,10 +16,6 @@ type DashboardData = {
   users: User[];
 };
 
-type UserBooking = { date: string; type: string; bookedAt: string };
-type UserPayment = { id: string; date: string; type: string; amount: number; note: string };
-
-
 function formatDate(dateStr: string) {
   const [y, m, d] = dateStr.split("-").map(Number);
   return new Date(y, m - 1, d).toLocaleDateString("en-CH", {
@@ -67,6 +63,8 @@ export default function AdminPage() {
   const [payStatus, setPayStatus] = useState("");
   const [paySubmitting, setPaySubmitting] = useState(false);
 
+  // Customer table search
+  const [customerSearch, setCustomerSearch] = useState("");
 
   // Inline booking count edits in the all-customers table
   const [bookingEdits, setBookingEdits] = useState<Record<string, string>>({});
@@ -96,19 +94,6 @@ export default function AdminPage() {
     } catch {}
     setBookingSaving((s) => ({ ...s, [email]: false }));
   };
-
-  // User lookup
-  const [lookupEmail, setLookupEmail] = useState("");
-  const [lookupData, setLookupData] = useState<{
-    bookings: UserBooking[];
-    sixpackRemaining: number;
-    sixpackStartDate: string | null;
-    bookingCountOverride: number | null;
-    payments: UserPayment[];
-  } | null>(null);
-  const [editBookingCount, setEditBookingCount] = useState("");
-  const [bookingCountStatus, setBookingCountStatus] = useState("");
-  const [lookupLoading, setLookupLoading] = useState(false);
 
   const login = async () => {
     setLoading(true);
@@ -204,45 +189,6 @@ export default function AdminPage() {
     }
   };
 
-  const lookupUser = async () => {
-    if (!lookupEmail.trim()) return;
-    setLookupLoading(true);
-    setLookupData(null);
-    setBookingCountStatus("");
-    try {
-      const res = await fetch(`/api/user/bookings?email=${encodeURIComponent(lookupEmail.trim())}`);
-      const json = await res.json();
-      if (json.success) {
-        setLookupData(json);
-        const effective = json.bookingCountOverride !== null ? json.bookingCountOverride : json.bookings.length;
-        setEditBookingCount(String(effective));
-      }
-    } catch {}
-    setLookupLoading(false);
-  };
-
-  const saveBookingCount = async () => {
-    if (!lookupEmail.trim()) return;
-    setBookingCountStatus("");
-    try {
-      const res = await fetch("/api/admin/set-booking-count", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: lookupEmail.trim(), count: Number(editBookingCount), password }),
-      });
-      const json = await res.json();
-      if (json.success) {
-        setBookingCountStatus(`✓ Booking count set to ${json.count}`);
-        setLookupData((prev) => prev ? { ...prev, bookingCountOverride: json.count, sixpackRemaining: json.sixpackRemaining } : prev);
-        refreshDashboard();
-      } else {
-        setBookingCountStatus("Error updating count.");
-      }
-    } catch {
-      setBookingCountStatus("Error updating count.");
-    }
-  };
-
   if (!authed) {
     return (
       <div className="admin-shell">
@@ -267,6 +213,9 @@ export default function AdminPage() {
 
   const upcomingDates = AVAILABLE_DATES_ARRAY.filter(isUpcoming);
   const pastDates = AVAILABLE_DATES_ARRAY.filter((d) => !isUpcoming(d)).reverse();
+  const filteredUsers = (data?.users ?? []).filter((u) =>
+    u.email.includes(customerSearch.toLowerCase().trim())
+  );
 
   return (
     <div className="admin-shell">
@@ -408,122 +357,66 @@ export default function AdminPage() {
         <section className="admin-section">
           <h2 className="admin-section-title">All customers</h2>
           {data && data.users.length > 0 ? (
-            <table className="admin-table">
-              <thead>
-                <tr>
-                  <th>Email</th>
-                  <th>6-Pack left</th>
-                  <th>Total bookings</th>
-                  <th>Last booking</th>
-                </tr>
-              </thead>
-              <tbody>
-                {data.users.map((u) => {
-                  const editVal = bookingEdits[u.email] ?? String(u.bookingCount);
-                  const saving = bookingSaving[u.email] ?? false;
-                  return (
-                    <tr key={u.email} className={u.sixpackRemaining > 0 ? "admin-row-sixpack" : ""}>
-                      <td>{u.email}</td>
-                      <td>{u.sixpackRemaining > 0 ? `${u.sixpackRemaining} entries` : "—"}</td>
-                      <td>
-                        <div className="admin-form-row" style={{ gap: "0.4rem", flexWrap: "nowrap" }}>
-                          <input
-                            type="number"
-                            value={editVal}
-                            min="0"
-                            className="admin-input admin-input-amount"
-                            style={{ width: "4.5rem" }}
-                            onChange={(e) => setBookingEdits((s) => ({ ...s, [u.email]: e.target.value }))}
-                            onKeyDown={(e) => e.key === "Enter" && saveBookingCountInline(u.email)}
-                          />
-                          <button
-                            className="btn btn-primary"
-                            style={{ padding: "0.25rem 0.6rem", fontSize: "0.8rem" }}
-                            disabled={saving}
-                            onClick={() => saveBookingCountInline(u.email)}
-                          >
-                            {saving ? "…" : "Save"}
-                          </button>
-                        </div>
-                      </td>
-                      <td>{u.lastBooking ? formatDate(u.lastBooking) : "—"}</td>
+            <>
+              <input
+                type="text"
+                placeholder="Search by email…"
+                value={customerSearch}
+                onChange={(e) => setCustomerSearch(e.target.value)}
+                className="admin-input admin-input-wide"
+                style={{ marginBottom: "0.75rem" }}
+              />
+              {filteredUsers.length > 0 ? (
+                <table className="admin-table">
+                  <thead>
+                    <tr>
+                      <th>Email</th>
+                      <th>6-Pack left</th>
+                      <th>Total bookings</th>
+                      <th>Last booking</th>
                     </tr>
-                  );
-                })}
-              </tbody>
-            </table>
+                  </thead>
+                  <tbody>
+                    {filteredUsers.map((u) => {
+                      const editVal = bookingEdits[u.email] ?? String(u.bookingCount);
+                      const saving = bookingSaving[u.email] ?? false;
+                      return (
+                        <tr key={u.email} className={u.sixpackRemaining > 0 ? "admin-row-sixpack" : ""}>
+                          <td>{u.email}</td>
+                          <td>{u.sixpackRemaining > 0 ? `${u.sixpackRemaining} entries` : "—"}</td>
+                          <td>
+                            <div className="admin-form-row" style={{ gap: "0.4rem", flexWrap: "nowrap" }}>
+                              <input
+                                type="number"
+                                value={editVal}
+                                min="0"
+                                className="admin-input admin-input-amount"
+                                style={{ width: "4.5rem" }}
+                                onChange={(e) => setBookingEdits((s) => ({ ...s, [u.email]: e.target.value }))}
+                                onKeyDown={(e) => e.key === "Enter" && saveBookingCountInline(u.email)}
+                              />
+                              <button
+                                className="btn btn-primary"
+                                style={{ padding: "0.25rem 0.6rem", fontSize: "0.8rem" }}
+                                disabled={saving}
+                                onClick={() => saveBookingCountInline(u.email)}
+                              >
+                                {saving ? "…" : "Save"}
+                              </button>
+                            </div>
+                          </td>
+                          <td>{u.lastBooking ? formatDate(u.lastBooking) : "—"}</td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              ) : (
+                <p className="admin-empty">No customers match "{customerSearch}".</p>
+              )}
+            </>
           ) : (
             <p className="admin-empty">No customers yet.</p>
-          )}
-        </section>
-
-        {/* User lookup */}
-        <section className="admin-section">
-          <h2 className="admin-section-title">Look up customer</h2>
-          <div className="admin-form-row">
-            <input
-              type="email"
-              placeholder="Customer email"
-              value={lookupEmail}
-              onChange={(e) => setLookupEmail(e.target.value)}
-              onKeyDown={(e) => e.key === "Enter" && lookupUser()}
-              className="admin-input admin-input-wide"
-            />
-            <button className="btn btn-primary" onClick={lookupUser} disabled={lookupLoading}>
-              {lookupLoading ? "Loading..." : "Look up"}
-            </button>
-          </div>
-          {lookupData && (
-            <div className="admin-lookup-result">
-              <p><strong>6-Pack remaining:</strong> {lookupData.sixpackRemaining > 0 ? `${lookupData.sixpackRemaining} entries` : "None"}{lookupData.sixpackStartDate && lookupData.sixpackRemaining > 0 ? ` (from ${formatDate(lookupData.sixpackStartDate)})` : ""}</p>
-              <div className="admin-form-row" style={{ alignItems: "center", marginBottom: "0.25rem" }}>
-                <strong>Total bookings:</strong>
-                <input
-                  type="number"
-                  value={editBookingCount}
-                  onChange={(e) => setEditBookingCount(e.target.value)}
-                  className="admin-input admin-input-amount"
-                  min="0"
-                  style={{ width: "5rem" }}
-                />
-                <button className="btn btn-primary" onClick={saveBookingCount}>Save</button>
-                {bookingCountStatus && <span className="admin-status" style={{ margin: 0 }}>{bookingCountStatus}</span>}
-              </div>
-              {lookupData.bookings.length > 0 && (
-                <>
-                  <p className="admin-lookup-subtitle">Bookings</p>
-                  <table className="admin-table admin-table-sm">
-                    <thead><tr><th>Date</th><th>Type</th></tr></thead>
-                    <tbody>
-                      {lookupData.bookings.map((b) => (
-                        <tr key={b.date + b.bookedAt}>
-                          <td>{formatDate(b.date)}</td>
-                          <td>{b.type === "sixpack" ? "6-Pack" : "Single"}</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </>
-              )}
-              {lookupData.payments && lookupData.payments.length > 0 && (
-                <>
-                  <p className="admin-lookup-subtitle">Payments</p>
-                  <table className="admin-table admin-table-sm">
-                    <thead><tr><th>Date</th><th>Type</th><th>Amount</th><th>Note</th></tr></thead>
-                    <tbody>
-                      {lookupData.payments.map((p) => (
-                        <tr key={p.id}>
-                          <td>{formatDate(p.date)}</td>
-                          <td>{p.type === "sixpack" ? "6-Pack" : "Single"}</td>
-                          <td>{p.amount} CHF</td>
-                          <td>{p.note || "—"}</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </>
-              )}
-            </div>
           )}
         </section>
 
