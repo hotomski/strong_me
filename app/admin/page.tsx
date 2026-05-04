@@ -68,6 +68,35 @@ export default function AdminPage() {
   const [paySubmitting, setPaySubmitting] = useState(false);
 
 
+  // Inline booking count edits in the all-customers table
+  const [bookingEdits, setBookingEdits] = useState<Record<string, string>>({});
+  const [bookingSaving, setBookingSaving] = useState<Record<string, boolean>>({});
+
+  const saveBookingCountInline = async (email: string) => {
+    const val = bookingEdits[email];
+    if (val === undefined) return;
+    setBookingSaving((s) => ({ ...s, [email]: true }));
+    try {
+      const res = await fetch("/api/admin/set-booking-count", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, count: Number(val), password }),
+      });
+      const json = await res.json();
+      if (json.success && data) {
+        setData({
+          ...data,
+          users: data.users.map((u) =>
+            u.email === email
+              ? { ...u, bookingCount: json.count, sixpackRemaining: json.sixpackRemaining }
+              : u
+          ),
+        });
+      }
+    } catch {}
+    setBookingSaving((s) => ({ ...s, [email]: false }));
+  };
+
   // User lookup
   const [lookupEmail, setLookupEmail] = useState("");
   const [lookupData, setLookupData] = useState<{
@@ -389,14 +418,38 @@ export default function AdminPage() {
                 </tr>
               </thead>
               <tbody>
-                {data.users.map((u) => (
-                  <tr key={u.email} className={u.sixpackRemaining > 0 ? "admin-row-sixpack" : ""}>
-                    <td>{u.email}</td>
-                    <td>{u.sixpackRemaining > 0 ? `${u.sixpackRemaining} entries` : "—"}</td>
-                    <td>{u.bookingCount}</td>
-                    <td>{u.lastBooking ? formatDate(u.lastBooking) : "—"}</td>
-                  </tr>
-                ))}
+                {data.users.map((u) => {
+                  const editVal = bookingEdits[u.email] ?? String(u.bookingCount);
+                  const saving = bookingSaving[u.email] ?? false;
+                  return (
+                    <tr key={u.email} className={u.sixpackRemaining > 0 ? "admin-row-sixpack" : ""}>
+                      <td>{u.email}</td>
+                      <td>{u.sixpackRemaining > 0 ? `${u.sixpackRemaining} entries` : "—"}</td>
+                      <td>
+                        <div className="admin-form-row" style={{ gap: "0.4rem", flexWrap: "nowrap" }}>
+                          <input
+                            type="number"
+                            value={editVal}
+                            min="0"
+                            className="admin-input admin-input-amount"
+                            style={{ width: "4.5rem" }}
+                            onChange={(e) => setBookingEdits((s) => ({ ...s, [u.email]: e.target.value }))}
+                            onKeyDown={(e) => e.key === "Enter" && saveBookingCountInline(u.email)}
+                          />
+                          <button
+                            className="btn btn-primary"
+                            style={{ padding: "0.25rem 0.6rem", fontSize: "0.8rem" }}
+                            disabled={saving}
+                            onClick={() => saveBookingCountInline(u.email)}
+                          >
+                            {saving ? "…" : "Save"}
+                          </button>
+                        </div>
+                      </td>
+                      <td>{u.lastBooking ? formatDate(u.lastBooking) : "—"}</td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           ) : (
