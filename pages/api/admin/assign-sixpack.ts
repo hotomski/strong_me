@@ -29,6 +29,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   await Promise.all([
     redis.set(`user:sixpack:${normalizedEmail}`, sixpackEntries),
     redis.set(`user:sixpack:startdate:${normalizedEmail}`, date),
+    redis.set(`user:bookings:count-override:${normalizedEmail}`, 0),
     redis.sadd("all:emails", normalizedEmail),
   ]);
 
