@@ -211,7 +211,6 @@ export default function AdminPage() {
     );
   }
 
-  const upcomingDates = AVAILABLE_DATES_ARRAY.filter(isUpcoming);
   const pastDates = AVAILABLE_DATES_ARRAY.filter((d) => !isUpcoming(d)).reverse();
   const filteredUsers = (data?.users ?? []).filter((u) =>
     u.email.includes(customerSearch.toLowerCase().trim())
@@ -233,27 +232,6 @@ export default function AdminPage() {
 
       <main className="admin-main">
 
-        {/* Upcoming classes */}
-        <section className="admin-section">
-          <h2 className="admin-section-title">Upcoming classes</h2>
-          <table className="admin-table">
-            <thead>
-              <tr><th>Date</th><th>Booked</th><th>Spots left</th></tr>
-            </thead>
-            <tbody>
-              {upcomingDates.map((d) => {
-                const count = data?.classCounts[d] ?? 0;
-                return (
-                  <tr key={d}>
-                    <td>{formatDate(d)}</td>
-                    <td>{count} / 10</td>
-                    <td>{10 - count}</td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        </section>
 
         {/* Assign 6-pack */}
         <section className="admin-section">
