@@ -208,7 +208,7 @@ export default function Corporate() {
             <div className="instructor-profile">
               <div className="instructor-photo-wrap">
                 <Image
-                  src="/images/profile.jpg"
+                  src="/images/profile.png"
                   alt="Sofija Hotomski — StrongME instructor"
                   fill
                   className="instructor-photo"
