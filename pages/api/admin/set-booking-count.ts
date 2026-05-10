@@ -55,17 +55,16 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       ? currentOverride
       : bookings.length;
 
-  const delta = newCount - currentCount;
-
+  const prevSixpack = sixpackRemaining ?? 0;
   const ops: Promise<unknown>[] = [
     redis.set(`user:bookings:count-override:${key}`, newCount),
   ];
 
-  const prevSixpack = sixpackRemaining ?? 0;
+  // Keep sixpack + bookings = originalAssigned, in both directions
   let newSixpack = prevSixpack;
-
-  if (delta > 0 && prevSixpack > 0) {
-    newSixpack = Math.max(0, prevSixpack - delta);
+  if (prevSixpack > 0 || currentCount > 0) {
+    const originalAssigned = prevSixpack + currentCount;
+    newSixpack = Math.max(0, originalAssigned - newCount);
     ops.push(redis.set(`user:sixpack:${key}`, newSixpack));
   }
 
