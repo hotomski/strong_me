@@ -71,9 +71,8 @@ export default function AdminPage() {
   const [bookingEdits, setBookingEdits] = useState<Record<string, string>>({});
   const [bookingSaving, setBookingSaving] = useState<Record<string, boolean>>({});
 
-  const saveBookingCountInline = async (email: string) => {
-    const val = bookingEdits[email];
-    if (val === undefined) return;
+  const saveBookingCountInline = async (email: string, fallbackCount: number) => {
+    const val = bookingEdits[email] ?? String(fallbackCount);
     setBookingSaving((s) => ({ ...s, [email]: true }));
     try {
       const res = await fetch("/api/admin/set-booking-count", {
@@ -82,15 +81,15 @@ export default function AdminPage() {
         body: JSON.stringify({ email, count: Number(val), password }),
       });
       const json = await res.json();
-      if (json.success && data) {
-        setData({
-          ...data,
-          users: data.users.map((u) =>
+      if (json.success) {
+        setData((prev) => prev ? {
+          ...prev,
+          users: prev.users.map((u) =>
             u.email === email
               ? { ...u, bookingCount: json.count, sixpackRemaining: json.sixpackRemaining }
               : u
           ),
-        });
+        } : prev);
       }
     } catch {}
     setBookingSaving((s) => ({ ...s, [email]: false }));
@@ -376,13 +375,13 @@ export default function AdminPage() {
                                 className="admin-input admin-input-amount"
                                 style={{ width: "4.5rem" }}
                                 onChange={(e) => setBookingEdits((s) => ({ ...s, [u.email]: e.target.value }))}
-                                onKeyDown={(e) => e.key === "Enter" && saveBookingCountInline(u.email)}
+                                onKeyDown={(e) => e.key === "Enter" && saveBookingCountInline(u.email, u.bookingCount)}
                               />
                               <button
                                 className="btn btn-primary"
                                 style={{ padding: "0.25rem 0.6rem", fontSize: "0.8rem" }}
                                 disabled={saving}
-                                onClick={() => saveBookingCountInline(u.email)}
+                                onClick={() => saveBookingCountInline(u.email, u.bookingCount)}
                               >
                                 {saving ? "…" : "Save"}
                               </button>
