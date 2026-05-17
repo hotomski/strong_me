@@ -382,7 +382,7 @@ export default function Home() {
             <div className="join-card-block">
               <span className="join-card-label">Schedule</span>
               <p>Every Saturday / Sunday · 10:30 AM</p>
-              {getNextClass() && <p><strong>Next class: {getNextClass()}</strong></p>}
+              {getNextClass() && <p style={{ whiteSpace: "nowrap" }}><strong>Next class: {getNextClass()}</strong></p>}
             </div>
 
             <div className="join-card-block">
