@@ -9,7 +9,24 @@ import { FaInstagram } from "react-icons/fa";
 import "react-datepicker/dist/react-datepicker.css";
 
 import type ReactDatePicker from "react-datepicker";
+import { AVAILABLE_DATES_ARRAY } from "@/lib/constants";
 type DatePickerType = typeof ReactDatePicker;
+
+function getNextClass(): string | null {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  for (const dateStr of AVAILABLE_DATES_ARRAY) {
+    const [y, m, d] = dateStr.split("-").map(Number);
+    const date = new Date(y, m - 1, d);
+    if (date >= today) {
+      const dayName = date.toLocaleDateString("en-CH", { weekday: "long" });
+      const dd = String(d).padStart(2, "0");
+      const mm = String(m).padStart(2, "0");
+      return `${dayName} ${dd}.${mm}.${y} · 10:30 AM`;
+    }
+  }
+  return null;
+}
 
 const DatePicker = dynamic(
   () => import("react-datepicker").then((mod) => mod.default) as any,
@@ -365,7 +382,7 @@ export default function Home() {
             <div className="join-card-block">
               <span className="join-card-label">Schedule</span>
               <p>Every Saturday / Sunday · 10:30 AM</p>
-              <p><strong>Next class: Saturday 23.05.2026 · 1:00 PM</strong></p>
+              {getNextClass() && <p><strong>Next class: {getNextClass()}</strong></p>}
             </div>
 
             <div className="join-card-block">
