@@ -383,7 +383,7 @@ export default function Home() {
             <div className="join-card-block">
               <span className="join-card-label">Schedule</span>
               <p>Every Saturday / Sunday · 10:30 AM</p>
-              {(() => { const nc = getNextClass(); return nc ? <p><strong>Next class: {nc.date}</strong><br/><strong>{nc.time}</strong></p> : null; })()}
+              {(() => { const nc = getNextClass(); return nc ? <p><strong>Next class: {nc.date}</strong><br/><strong>{nc.time}</strong>{nc.time !== "10:30 AM" && <span style={{ fontWeight: 400, fontSize: "0.85em", color: "#b45309", marginLeft: "0.4em" }}>(exception)</span>}</p> : null; })()}
             </div>
 
             <div className="join-card-block">
