@@ -9,7 +9,7 @@ import { FaInstagram } from "react-icons/fa";
 import "react-datepicker/dist/react-datepicker.css";
 
 import type ReactDatePicker from "react-datepicker";
-import { AVAILABLE_DATES_ARRAY } from "@/lib/constants";
+import { AVAILABLE_DATES_ARRAY, CLASS_TIME_OVERRIDES } from "@/lib/constants";
 type DatePickerType = typeof ReactDatePicker;
 
 function getNextClass(): string | null {
@@ -22,7 +22,8 @@ function getNextClass(): string | null {
       const dayName = date.toLocaleDateString("en-CH", { weekday: "long" });
       const dd = String(d).padStart(2, "0");
       const mm = String(m).padStart(2, "0");
-      return `${dayName} ${dd}.${mm}.${y} · 10:30 AM`;
+      const time = CLASS_TIME_OVERRIDES[dateStr] ?? "10:30 AM";
+      return `${dayName} ${dd}.${mm}.${y} · ${time}`;
     }
   }
   return null;
