@@ -12,7 +12,7 @@ import type ReactDatePicker from "react-datepicker";
 import { AVAILABLE_DATES_ARRAY, CLASS_TIME_OVERRIDES } from "@/lib/constants";
 type DatePickerType = typeof ReactDatePicker;
 
-function getNextClass(): string | null {
+function getNextClass(): { date: string; time: string } | null {
   const today = new Date();
   today.setHours(0, 0, 0, 0);
   for (const dateStr of AVAILABLE_DATES_ARRAY) {
@@ -23,7 +23,7 @@ function getNextClass(): string | null {
       const dd = String(d).padStart(2, "0");
       const mm = String(m).padStart(2, "0");
       const time = CLASS_TIME_OVERRIDES[dateStr] ?? "10:30 AM";
-      return `${dayName} ${dd}.${mm}.${y} · ${time}`;
+      return { date: `${dayName} ${dd}.${mm}.${y}`, time };
     }
   }
   return null;
@@ -383,7 +383,7 @@ export default function Home() {
             <div className="join-card-block">
               <span className="join-card-label">Schedule</span>
               <p>Every Saturday / Sunday · 10:30 AM</p>
-              {getNextClass() && <p style={{ whiteSpace: "nowrap" }}><strong>Next class: {getNextClass()}</strong></p>}
+              {(() => { const nc = getNextClass(); return nc ? <p><strong>Next class: {nc.date}</strong><br/><strong>{nc.time}</strong></p> : null; })()}
             </div>
 
             <div className="join-card-block">
