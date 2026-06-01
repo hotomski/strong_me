@@ -4,7 +4,7 @@ export const AVAILABLE_DATES_ARRAY = [
   // May 2026
   "2026-05-02", "2026-05-10", "2026-05-16", "2026-05-23", "2026-05-31",
   // June 2026
-  "2026-06-06", "2026-06-13", "2026-06-21", "2026-06-27",
+  "2026-06-05", "2026-06-06", "2026-06-13", "2026-06-21", "2026-06-27",
 ];
 
 export const AVAILABLE_DATES = new Set(AVAILABLE_DATES_ARRAY);
@@ -12,4 +12,5 @@ export const AVAILABLE_DATES = new Set(AVAILABLE_DATES_ARRAY);
 // Per-class time overrides — defaults to 10:30 AM if not listed
 export const CLASS_TIME_OVERRIDES: Record<string, string> = {
   "2026-05-23": "1:00 PM",
+  "2026-06-05": "6:30 PM",
 };
