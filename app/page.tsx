@@ -9,7 +9,7 @@ import { FaInstagram } from "react-icons/fa";
 import "react-datepicker/dist/react-datepicker.css";
 
 import type ReactDatePicker from "react-datepicker";
-import { AVAILABLE_DATES_ARRAY, CLASS_TIME_OVERRIDES } from "@/lib/constants";
+import { AVAILABLE_DATES_ARRAY, AVAILABLE_DATES, CLASS_TIME_OVERRIDES } from "@/lib/constants";
 type DatePickerType = typeof ReactDatePicker;
 
 function getNextClass(): { date: string; time: string } | null {
@@ -39,14 +39,6 @@ const DatePicker = dynamic(
   }
 ) as unknown as DatePickerType;
 
-const AVAILABLE_DATES = new Set([
-  // April 2026
-  "2026-04-04", "2026-04-12", "2026-04-18", "2026-04-25",
-  // May 2026
-  "2026-05-02", "2026-05-10", "2026-05-16", "2026-05-23", "2026-05-31",
-  // June 2026
-  "2026-06-06", "2026-06-13", "2026-06-21", "2026-06-27",
-]);
 
 function toDateKey(date: Date) {
   const y = date.getFullYear();
