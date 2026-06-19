@@ -281,6 +281,53 @@ export default function Home() {
           </div>
         </section>
 
+        {/* ABOUT INSTRUCTOR */}
+        <section className="content-section section-divider">
+          <div className="section-label">
+            <h2>About the instructor</h2>
+          </div>
+
+          <div className="section-content">
+            <div className="instructor-profile">
+              <div className="instructor-photo-wrap">
+                <Image
+                  src="/images/Instructor.jpg"
+                  alt="Sofija Hotomski — StrongME instructor"
+                  fill
+                  className="instructor-photo"
+                  sizes="(min-width: 1024px) 220px, 160px"
+                />
+              </div>
+              <div className="instructor-bio">
+                <p className="lead-paragraph">
+                  StrongME was created by Sofija Hotomski — movement facilitator,
+                  mindfulness practitioner, and former tech professional based in Zurich.
+                </p>
+                <p>
+                  Sofija holds a PhD in Computer Science and spent years as a Product Manager
+                  in the tech industry. She knows what high-pressure days feel like from the inside —
+                  the back-to-back meetings, the mental overload, the body slowly shutting down
+                  from too much sitting and too little recovery.
+                </p>
+                <p>
+                  StrongME group classes run every Saturday and Sunday in Zurich,
+                  with a growing community who return week after week for the energy,
+                  the connection, and the results.
+                </p>
+                <p className="closing-line">Strong body. Strong mind. Strong ME.</p>
+                <a
+                  href="https://www.hotomski.com/"
+                  className="instructor-link"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Learn more about Sofija →
+                </a>
+              </div>
+            </div>
+          </div>
+        </section>
+
         {/* FORMAT */}
         <section className="content-section">
           <div className="section-label">
