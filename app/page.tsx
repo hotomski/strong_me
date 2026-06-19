@@ -213,7 +213,7 @@ export default function Home() {
             <div className="hero-image-frame">
               <div className="hero-collage">
                 <div className="hero-collage-item">
-                  <Image src="/images/Website 1.jpg" alt="StrongME class with pompoms" fill className="hero-image" sizes="(min-width: 1024px) 26vw, 50vw" priority />
+                  <Image src="/images/Website 1.1.jpg" alt="StrongME class with pompoms" fill className="hero-image" sizes="(min-width: 1024px) 26vw, 50vw" priority />
                 </div>
                 <div className="hero-collage-item">
                   <Image src="/images/Website2.jpg" alt="StrongME class with scarves" fill className="hero-image" sizes="(min-width: 1024px) 26vw, 50vw" priority />
