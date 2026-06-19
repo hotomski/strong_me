@@ -301,18 +301,23 @@ export default function Home() {
               <div className="instructor-bio">
                 <p className="lead-paragraph">
                   StrongME was created by Sofija Hotomski — movement facilitator,
-                  mindfulness practitioner, and former tech professional based in Zurich.
+                  mindfulness practitioner, and your instructor in Zurich.
                 </p>
                 <p>
-                  Sofija holds a PhD in Computer Science and spent years as a Product Manager
-                  in the tech industry. She knows what high-pressure days feel like from the inside —
-                  the back-to-back meetings, the mental overload, the body slowly shutting down
-                  from too much sitting and too little recovery.
+                  I know what it feels like to be exhausted before the day has even started.
+                  To carry too much — relentless work pressure, the invisible load of parenting,
+                  grief that creeps into ordinary days, and the kind of stress that settles
+                  deep in your body and refuses to leave.
                 </p>
                 <p>
-                  StrongME group classes run every Saturday and Sunday in Zurich,
-                  with a growing community who return week after week for the energy,
-                  the connection, and the results.
+                  I created StrongME because I needed it myself. Not a class that demands more
+                  from an already depleted body — but one that gives back. A place where you
+                  can arrive exactly as you are, and leave feeling like yourself again.
+                </p>
+                <p>
+                  The community around these classes is what makes it real. People return week
+                  after week — not just for the movement, but for the connection, the laughter,
+                  and the quiet reminder that they are not alone.
                 </p>
                 <p className="closing-line">Strong body. Strong mind. Strong ME.</p>
                 <a
