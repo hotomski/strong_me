@@ -647,6 +647,21 @@ img {
   color: var(--corp-text);
 }
 
+@media (max-width: 480px) {
+  .corp-nav {
+    width: calc(100% - 32px);
+  }
+  .corp-nav-logo {
+    font-size: 0.95rem;
+  }
+  .corp-nav-links {
+    gap: 0.9rem;
+  }
+  .corp-nav-link {
+    font-size: 0.78rem;
+  }
+}
+
 .corp-btn-primary {
   background: var(--corp-text);
   color: #fff;
