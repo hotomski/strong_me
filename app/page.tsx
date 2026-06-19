@@ -211,14 +211,20 @@ export default function Home() {
 
           <div className="hero-media">
             <div className="hero-image-frame">
-              <Image
-                src="/images/strongME_New.png"
-                alt="StrongME movement, connection and healing"
-                fill
-                priority
-                className="hero-image"
-                sizes="(min-width: 1024px) 52vw, 100vw"
-              />
+              <div className="hero-collage">
+                <div className="hero-collage-item">
+                  <Image src="/images/Website 1.jpg" alt="StrongME class with pompoms" fill className="hero-image" sizes="(min-width: 1024px) 26vw, 50vw" priority />
+                </div>
+                <div className="hero-collage-item">
+                  <Image src="/images/Website2.jpg" alt="StrongME class with scarves" fill className="hero-image" sizes="(min-width: 1024px) 26vw, 50vw" priority />
+                </div>
+                <div className="hero-collage-item">
+                  <Image src="/images/Website 3.jpg" alt="StrongME meditation session" fill className="hero-image" sizes="(min-width: 1024px) 26vw, 50vw" />
+                </div>
+                <div className="hero-collage-item">
+                  <Image src="/images/Website 4.jpg" alt="StrongME community connection" fill className="hero-image" sizes="(min-width: 1024px) 26vw, 50vw" />
+                </div>
+              </div>
             </div>
           </div>
         </section>
