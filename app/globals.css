@@ -557,7 +557,7 @@ img {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 24px;
-  margin-top: 0;
+  margin-top: 48px;
 }
 
 .corp-pillar {
