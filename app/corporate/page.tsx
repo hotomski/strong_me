@@ -46,24 +46,21 @@ export default function Corporate() {
           </div>
 
           <div className="hero-media">
-            <div className="corp-hero-card">
-              <div className="corp-stat">
-                <span className="corp-stat-number">20</span>
-                <span className="corp-stat-label">minutes</span>
+            <div className="hero-image-frame">
+              <div className="hero-collage">
+                <div className="hero-collage-item">
+                  <Image src="/images/corporate1.jpg" alt="StrongME corporate session" fill className="hero-image" sizes="(min-width: 1024px) 26vw, 50vw" priority />
+                </div>
+                <div className="hero-collage-item">
+                  <Image src="/images/corporate2.jpg" alt="StrongME corporate session" fill className="hero-image" sizes="(min-width: 1024px) 26vw, 50vw" priority />
+                </div>
+                <div className="hero-collage-item">
+                  <Image src="/images/corporate3.jpg" alt="StrongME corporate session" fill className="hero-image" sizes="(min-width: 1024px) 26vw, 50vw" />
+                </div>
+                <div className="hero-collage-item">
+                  <Image src="/images/corporate4.jpg" alt="StrongME corporate session" fill className="hero-image" sizes="(min-width: 1024px) 26vw, 50vw" />
+                </div>
               </div>
-              <div className="corp-stat-divider" />
-              <div className="corp-stat">
-                <span className="corp-stat-number">3</span>
-                <span className="corp-stat-label">elements</span>
-              </div>
-              <div className="corp-stat-divider" />
-              <div className="corp-stat">
-                <span className="corp-stat-number">∞</span>
-                <span className="corp-stat-label">impact</span>
-              </div>
-              <p className="corp-hero-card-text">
-                Movement · Strength · Mindfulness
-              </p>
             </div>
           </div>
         </section>
