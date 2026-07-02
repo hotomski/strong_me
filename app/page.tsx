@@ -22,7 +22,7 @@ function getNextClass(): { date: string; time: string } | null {
       const dayName = date.toLocaleDateString("en-CH", { weekday: "long" });
       const dd = String(d).padStart(2, "0");
       const mm = String(m).padStart(2, "0");
-      const time = CLASS_TIME_OVERRIDES[dateStr] ?? "10:30 AM";
+      const time = CLASS_TIME_OVERRIDES[dateStr] ?? "9:30 AM";
       return { date: `${dayName} ${dd}.${mm}.${y}`, time };
     }
   }
@@ -406,8 +406,8 @@ export default function Home() {
           <div className="join-card">
             <div className="join-card-block">
               <span className="join-card-label">Schedule</span>
-              <p>Every Saturday / Sunday · 10:30 AM</p>
-              {(() => { const nc = getNextClass(); return nc ? <p><strong>Next class: {nc.date}</strong><br/><strong>{nc.time}</strong>{nc.time !== "10:30 AM" && <span style={{ fontWeight: 400, fontSize: "0.85em", color: "#b45309", marginLeft: "0.4em" }}>(exception)</span>}</p> : null; })()}
+              <p>Every Saturday / Sunday · 9:30 AM</p>
+              {(() => { const nc = getNextClass(); return nc ? <p><strong>Next class: {nc.date}</strong><br/><strong>{nc.time}</strong>{nc.time !== "9:30 AM" && <span style={{ fontWeight: 400, fontSize: "0.85em", color: "#b45309", marginLeft: "0.4em" }}>(exception)</span>}</p> : null; })()}
             </div>
 
             <div className="join-card-block">
