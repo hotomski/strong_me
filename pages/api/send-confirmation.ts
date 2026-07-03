@@ -136,7 +136,7 @@ export default async function handler(
 
 Details:
 Date: ${formattedDate}
-Time: 10:30 AM
+Time: 9:30 AM
 Location: Otto-Schütz-Weg 9, 8050 Zurich
 ${sixpackTextNote}
 What to bring:
@@ -154,7 +154,7 @@ StrongME team`,
           <h2>StrongME Class Booking Confirmation</h2>
           <p>Thank you for booking your StrongME class.</p>
           <p><strong>Date:</strong> ${formattedDate}</p>
-          <p><strong>Time:</strong> 10:30 AM</p>
+          <p><strong>Time:</strong> 9:30 AM</p>
           <p><strong>Location:</strong> Otto-Schütz-Weg 9, 8050 Zurich</p>
           ${sixpackHtmlNote}
           <p><strong>What to bring:</strong></p>
