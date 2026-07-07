@@ -21,7 +21,7 @@ export const AVAILABLE_DATES_ARRAY = [
 
 export const AVAILABLE_DATES = new Set(AVAILABLE_DATES_ARRAY);
 
-// Per-class time overrides — defaults to 10:30 AM if not listed
+// Per-class time overrides — defaults to 9:30 AM if not listed
 export const CLASS_TIME_OVERRIDES: Record<string, string> = {
   "2026-05-23": "1:00 PM",
   "2026-06-05": "6:30 PM",
