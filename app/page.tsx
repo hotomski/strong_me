@@ -9,25 +9,9 @@ import { FaInstagram } from "react-icons/fa";
 import "react-datepicker/dist/react-datepicker.css";
 
 import type ReactDatePicker from "react-datepicker";
-import { AVAILABLE_DATES_ARRAY, AVAILABLE_DATES, CLASS_TIME_OVERRIDES } from "@/lib/constants";
+import { AVAILABLE_DATES } from "@/lib/constants";
 type DatePickerType = typeof ReactDatePicker;
 
-function getNextClass(): { date: string; time: string } | null {
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-  for (const dateStr of AVAILABLE_DATES_ARRAY) {
-    const [y, m, d] = dateStr.split("-").map(Number);
-    const date = new Date(y, m - 1, d);
-    if (date >= today) {
-      const dayName = date.toLocaleDateString("en-CH", { weekday: "long" });
-      const dd = String(d).padStart(2, "0");
-      const mm = String(m).padStart(2, "0");
-      const time = CLASS_TIME_OVERRIDES[dateStr] ?? "9:30 AM";
-      return { date: `${dayName} ${dd}.${mm}.${y}`, time };
-    }
-  }
-  return null;
-}
 
 const DatePicker = dynamic(
   () => import("react-datepicker").then((mod) => mod.default) as any,
@@ -408,7 +392,6 @@ export default function Home() {
               <span className="join-card-label">Schedule</span>
               <p>Every Saturday / Sunday · 9:30 AM</p>
               <p style={{ color: "#b45309", fontWeight: 600 }}>☀️ Summer break — classes resume in August</p>
-              {(() => { const nc = getNextClass(); return nc ? <p><strong>Next class: {nc.date}</strong><br/><strong>{nc.time}</strong>{nc.time !== "9:30 AM" && <span style={{ fontWeight: 400, fontSize: "0.85em", color: "#b45309", marginLeft: "0.4em" }}>(exception)</span>}</p> : null; })()}
             </div>
 
             <div className="join-card-block">
