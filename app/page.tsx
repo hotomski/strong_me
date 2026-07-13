@@ -407,6 +407,7 @@ export default function Home() {
             <div className="join-card-block">
               <span className="join-card-label">Schedule</span>
               <p>Every Saturday / Sunday · 9:30 AM</p>
+              <p style={{ color: "#b45309", fontWeight: 600 }}>☀️ Summer break — classes resume in August</p>
               {(() => { const nc = getNextClass(); return nc ? <p><strong>Next class: {nc.date}</strong><br/><strong>{nc.time}</strong>{nc.time !== "9:30 AM" && <span style={{ fontWeight: 400, fontSize: "0.85em", color: "#b45309", marginLeft: "0.4em" }}>(exception)</span>}</p> : null; })()}
             </div>
 
