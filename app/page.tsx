@@ -391,7 +391,7 @@ export default function Home() {
             <div className="join-card-block">
               <span className="join-card-label">Schedule</span>
               <p>Every Saturday / Sunday · 9:30 AM</p>
-              <p style={{ color: "#b45309", fontWeight: 600 }}>Next class: Saturday, 22.08.2026 · 9:30 AM</p>
+              <p style={{ color: "#b45309", fontWeight: 600 }}>Next class:<br />Saturday, 22.08.2026 · 9:30 AM</p>
             </div>
 
             <div className="join-card-block">
