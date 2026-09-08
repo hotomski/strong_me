@@ -10,6 +10,7 @@ import "react-datepicker/dist/react-datepicker.css";
 
 import type ReactDatePicker from "react-datepicker";
 import { AVAILABLE_DATES } from "@/lib/constants";
+import { getNextClass, type NextClass } from "@/lib/next-class";
 type DatePickerType = typeof ReactDatePicker;
 
 
@@ -39,6 +40,17 @@ export default function Home() {
   const [statusMessage, setStatusMessage] = useState("");
   const [statusType, setStatusType] = useState<"success" | "error" | ("")>("");
   const [soldOutDates, setSoldOutDates] = useState<Set<string>>(new Set());
+  const [nextClass, setNextClass] = useState<NextClass | null>(null);
+
+  // Computed on the client so the notice always reflects the visitor's
+  // "now" (Zurich time) and rolls over at 10:30 AM on class day, even if
+  // the tab stays open.
+  useEffect(() => {
+    const update = () => setNextClass(getNextClass());
+    update();
+    const id = setInterval(update, 60_000);
+    return () => clearInterval(id);
+  }, []);
 
   const fetchSoldOutDates = () => {
     const dates = Array.from(AVAILABLE_DATES).join(",");
@@ -391,7 +403,11 @@ export default function Home() {
             <div className="join-card-block">
               <span className="join-card-label">Schedule</span>
               <p>Every Saturday / Sunday · 9:30 AM</p>
-              <p style={{ color: "#b45309", fontWeight: 600 }}>Next class:<br />Saturday, 22.08.2026 · 9:30 AM</p>
+              {nextClass && (
+                <p style={{ color: "#b45309", fontWeight: 600 }}>
+                  Next class:<br />{nextClass.label} · {nextClass.time}
+                </p>
+              )}
             </div>
 
             <div className="join-card-block">
